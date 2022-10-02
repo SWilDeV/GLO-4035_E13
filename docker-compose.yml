@@ -5,5 +5,4 @@ services:
     ports:
       - "8080:8080"
   redis:
-    image: "swilsdev/glo-4035-bdd-avancee:glo-4035-bdd-avancee"
-
+    image: "swilsdev/glo-4035-bdd-avancee:v1"
