@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/heartbeat")
 def home():
-    return {"Quebec":"str"}
+    return {"Montreal":"str"}
 
 
 if __name__ == '__main__':
