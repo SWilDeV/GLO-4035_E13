@@ -7,9 +7,10 @@ ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=8080
 
+COPY populate_neo4j.py populate_neo4j.py
+COPY .env .env
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY . .
 
 CMD [ "python", "app.py"]

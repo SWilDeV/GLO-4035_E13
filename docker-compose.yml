@@ -4,26 +4,17 @@ services:
     build: .
     ports:
       - "8080:8080"
-  
-  mongodb:
-    image: mongo:5.0
-    ports:
-      - 27017:27017
-    volumes:
-      - ~/apps/mongo:/data/dbgit
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=S3cret
-  
+
   neo4j:
     image: neo4j:4.0.3
-    hostname: neo4j
+    hostname: neo
     container_name: neo4j
+    expose:
+      - 7474
+      - 7687
     ports:
       - "7474:7474"
       - "7687:7687"
-    volumes:
-      - ./neo4j/plugins:/plugins
     environment:
-      NEO4J_AUTH: neo4j/streams
-      NEO4J_dbms_logs_debug_level: DEBUG
+      - NEO4J_AUTH=$NEO4J_CREDENTIALS
+      - NEO4J_INTERNAL_URL=$NEO4J_INTERNAL_URL
