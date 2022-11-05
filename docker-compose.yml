@@ -7,7 +7,7 @@ services:
 
   neo4j:
     image: neo4j:4.0.3
-    hostname: neo
+    hostname: localhost
     container_name: neo4j
     expose:
       - 7474
