@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1
 
 FROM python:3.10.6-slim-buster
-RUN pip install --upgrade pip
 
 WORKDIR /projet_longitudinal
 ENV FLASK_APP=app.py
