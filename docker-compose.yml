@@ -4,3 +4,17 @@ services:
     build: .
     ports:
       - "8080:8080"
+
+  neo4j:
+    image: neo4j:4.0.3
+    hostname: neo
+    container_name: neo4j
+    expose:
+      - 7474
+      - 7687
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=$NEO4J_CREDENTIALS
+      - NEO4J_INTERNAL_URL=$NEO4J_INTERNAL_URL
