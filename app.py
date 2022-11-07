@@ -8,7 +8,6 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 
-
 @app.route("/heartbeat")
 def home():
     return {"Montreal":"str"}
@@ -25,7 +24,10 @@ def extracted_data():
         print("error with extracted_data")
         return "error with transformed_data"
     else:
-        return data
+        return {
+        "nbRestaurants":"int",
+        "nbSegments":data
+        }
 
 
 @app.route("/transformed_data")
@@ -38,7 +40,11 @@ def transformed_data():
         print("error with transformed_data")
         return "error with transformed_data"
     else:
-        return data
+        return {"restaurants":{
+            "type1":"int"
+        },
+        "longueurCyclable":data
+        }
 
 # @app.route("/extracted_data")
 # def extracted_data():
