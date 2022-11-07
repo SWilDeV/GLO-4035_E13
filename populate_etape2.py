@@ -56,3 +56,5 @@ with open(filename, 'r') as csvfile:
         print(row[0] +" / 17815")
         point2 = row[0]
         IDPiste2 = row[1]
+
+
