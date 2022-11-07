@@ -8,6 +8,8 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 
+exec(open('populate_etape2.py').read())
+
 @app.route("/heartbeat")
 def home():
     return {"Montreal":"str"}
@@ -22,7 +24,7 @@ def extracted_data():
     except:
         print("Oops!", sys.exc_info()[1], "occurred.")
         print("error with extracted_data")
-        return "error with transformed_data"
+        return "error with transformed_data "
     else:
         return {
         "nbRestaurants":"int",
@@ -61,6 +63,7 @@ def transformed_data():
 #         },
 #         "longueurCyclable":f'{(TRANSACTION.run("MATCH (:PointCycle)-[r:est_voisin]->(:PointCycle) return  sum(r.longueur) as total").data()[0]["total"]/1000)} KM'
 #         }
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)

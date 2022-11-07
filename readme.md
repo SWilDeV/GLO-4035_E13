@@ -1,9 +1,15 @@
-# Start
+# Monter les dockers
 
 docker compose up
 
-Alternative:
+# remplir la BD Neo4J:
 
-get the image: docker pull swilsdev/glo-4035-bdd-avancee:v1
+python3 populate_etape2.py
 
-launch the docker image: sudo docker run -d -p 8080:8080 devoir-e13
+# remplir la BD Mongo:
+
+(a remplir)
+
+# Lancer le webServer
+
+python3 app.py

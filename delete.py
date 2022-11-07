@@ -21,7 +21,7 @@ def validate_neo_connection(url, username, password):
             auth=(username, password),
             secure=False
         )
-        print('neo connection works')
+        
     except:
         print('Connection to neo failed, will retry in 10 sec')
         time.sleep(10)
@@ -34,3 +34,4 @@ graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
 transaction = graph.begin()
 graph.delete_all()
 graph.commit(transaction)
+print('data deleted')
