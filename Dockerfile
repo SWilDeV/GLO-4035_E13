@@ -3,16 +3,13 @@
 FROM python:3.10.6-slim-buster
 
 WORKDIR /app
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-ENV FLASK_RUN_PORT=8080
 
-COPY requirements.txt requirements.txt
-COPY populate.py populate.py
+
+COPY populate_etape2.py populate_etape2.py
+COPY app.py app.py
+COPY Neo4J.py Neo4J.py
 COPY .env .env
-
+COPY requirements.txt requirements.txt
 RUN pip install -Ur requirements.txt
 
-COPY . .
-
-CMD [ "python", "app.py"]
+CMD ["python3","app.py"]
