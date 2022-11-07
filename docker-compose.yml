@@ -1,13 +1,8 @@
 version: "3.9"
 services:
-  web:
-    build: .
-    ports:
-      - "8080:8080"
-
   neo4j:
-    image: neo4j:4.0.3
-    hostname: localhost
+    image: neo4j:3.5.8
+    hostname: neo
     container_name: neo4j
     expose:
       - 7474
@@ -18,3 +13,13 @@ services:
     environment:
       - NEO4J_AUTH=$NEO4J_CREDENTIALS
       - NEO4J_INTERNAL_URL=$NEO4J_INTERNAL_URL
+
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - 27017:27017
+    volumes:
+      - ~/apps/mongo:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=S3cret

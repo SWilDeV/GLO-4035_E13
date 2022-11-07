@@ -33,10 +33,9 @@ validate_neo_connection(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
 
 graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
 transaction = graph.begin()
-#WGS84Point = _point_subclass("WGS84Point", ["longitude", "latitude", "height"], {2: 4326, 3: 4979})
 
 
-filename = 'dataV2.csv'
+filename = 'dataV22.csv'
 
 with open(filename, 'r') as csvfile:
     datareader = csv.reader(csvfile)
@@ -46,7 +45,6 @@ with open(filename, 'r') as csvfile:
     point1 = ''
     point2 = ''
     for row in datareader:
-        # row[0]= Node("Point", IDPiste=row[1], Quartier=row[2], longitude=row[3], latitude=row[4], IdPoint=row[0])
         IDPiste1 = row[1]
         point1 = row[0]
         graph.run(f"CREATE (p:PointCycle) SET p.location = Point({{latitude: {row[4]}, longitude: {row[3]}}}),  p.Quartier = '{row[2]}',  p.IDPiste = '{row[1]}',  p.IdPoint = '{row[0]}'")
@@ -54,16 +52,7 @@ with open(filename, 'r') as csvfile:
         if(IDPiste1 == IDPiste2):
             graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.IdPoint = '{point1}' AND b.IdPoint = '{point2}' CREATE (a)-[r:est_voisin {{longueur:{row[5]} }}]->(b) RETURN type(r), r.longueur")    
         
-        #print("points: "+ row[0]+", "+point1 + ", "+point2)
 
-        print(row[0])
+        print(row[0] +" / 17815")
         point2 = row[0]
         IDPiste2 = row[1]
-        #transaction.create(row[0])
-    
-    #quebec = Node("Ville", fondation=1608, population=550294, altitude=98, langues="français", nom="Québec")
-    #transaction.create(quebec)
-
-
-#graph.delete_all()
-#graph.commit(transaction)
