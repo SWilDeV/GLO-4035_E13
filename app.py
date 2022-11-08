@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 config = dotenv_values(".env")
-#MONGO_URL = config.get("MONGO_URL")
+MONGO_URL = config.get("MONGO_URL")
 
 
 @app.route("/heartbeat")
@@ -23,19 +23,25 @@ def extracted_data():
         db=Database()
         data = db.extracted_data_Neo()
 
-
-        # client = pymongo.MongoClient(MONGO_URL)
-        # db = client["travaille_longitudinal"]
-        # col = db["travaille_longitudinal_data"]
+        try:
+            client = pymongo.MongoClient(MONGO_URL)
+            db = client["t_long"]
+            col = db["t_long_col"]
+        
+        except:
+            print("Oops!", sys.exc_info()[1], "occurred.")
+            print("error with Mongo Connexion in extracted_data")
+            return "error with Mongo Connexion in extracted_data"
+        
         
     except:
         print("Oops!", sys.exc_info()[1], "occurred.")
         print("error with extracted_data")
-        return "error with transformed_data "
+        return "error with extracted_data "
     else:
         return {
         "nbRestaurants":"int",
-        # "nbRestaurants":col.count_documents({}),
+         "nbRestaurants":col.count_documents({}),
         "nbSegments":data
         }
 
@@ -56,22 +62,6 @@ def transformed_data():
         },
         "longueurCyclable":data
         }
-
-# @app.route("/extracted_data")
-# def extracted_data():
-#     return {
-#         "nbRestaurants":"int",
-#         "nbSegments":f'{(TRANSACTION.run("MATCH p=()-[r:est_voisin]->() RETURN count(p) as total").data()[0]["total"])} segments'
-#         }
-
-# @app.route("/transformed_data")
-# def transformed_data():
-#     return {
-#         "restaurants":{
-#             "type1":"int"
-#         },
-#         "longueurCyclable":f'{(TRANSACTION.run("MATCH (:PointCycle)-[r:est_voisin]->(:PointCycle) return  sum(r.longueur) as total").data()[0]["total"]/1000)} KM'
-#         }
 
 
 if __name__ == '__main__':

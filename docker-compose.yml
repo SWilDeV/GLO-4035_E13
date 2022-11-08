@@ -15,7 +15,7 @@ services:
       - "7687:7687"
     environment:
       - NEO4J_AUTH=$NEO4J_CREDENTIALS
-      - NEO4J_INTERNAL_URL=$NEO4J_INTERNAL_URL
+      - NEO4J_INTERNAL_URL=$NEO4J_URL
 
   mongo:
     image: mongo:5.0
@@ -30,26 +30,6 @@ services:
     volumes:
       - ~/apps/mongo:/data/db
 
-  neo4j_populate:
-    container_name: neo4j_populate
-    build: .
-    networks:
-      backend:
-        ipv4_address: 172.21.0.4
-    depends_on:
-      - neo4j
-    command: python3 -u populate_neo4j.py
-
-  mongo_populate:
-    container_name: mongo_populate
-    build: .
-    networks:
-      backend:
-        ipv4_address: 172.21.0.6
-    depends_on:
-      - mongo
-    command: python3 -u populate_mongo.py
-
   api:
     build: .
     expose:
@@ -63,8 +43,8 @@ services:
       backend:
         ipv4_address: 172.21.0.5
     container_name: api
-    command: flask run --host=0.0.0.0 --port=8080
-    
+    command: sh -c "python3 -u populate_neo4j.py && python3 -u populate_mongo.py && python3 -u app.py"
+
 networks:
   backend:
     driver: bridge
