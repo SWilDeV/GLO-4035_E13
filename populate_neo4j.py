@@ -34,7 +34,7 @@ graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
 transaction = graph.begin()
 
 
-filename = 'dataV2.csv'
+filename = 'dataV22.csv'
 
 with open(filename, 'r') as csvfile:
     datareader = csv.reader(csvfile)
