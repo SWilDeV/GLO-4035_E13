@@ -2,14 +2,15 @@
 
 docker compose up
 
-# remplir la BD Neo4J:
+# .env file:
 
-python3 populate_etape2.py
+NEO4J_CREDENTIALS=neo4j/secret_password_1234
+NEO4J_URL=bolt://172.21.0.2:7687
+MONGO_URL=mongodb://172.21.0.3:27017
 
-# remplir la BD Mongo:
+# Utilisation en local avec le docker ouvert
+NEO4J_CREDENTIALS=neo4j/secret_password_1234
+NEO4J_URL_LOCAL=bolt://localhost:7687
+MONGO_URL_LOCAL=mongodb://localhost:27017
 
-(a remplir)
-
-# Lancer le webServer
-
-python3 app.py
+# attente ~15 min

@@ -1,11 +1,10 @@
 import time
 import csv
-
 from decouple import config
-from py2neo import Graph, Node, Relationship
+from py2neo import Graph
 
 
-INTERNAL_URL = config("NEO4J_INTERNAL_URL")
+INTERNAL_URL = config("NEO4J_URL")
 
 # We use split to split the NEO4J_AUTH formatted as "user/password"
 USERNAME, PASSWORD = config("NEO4J_CREDENTIALS").split("/")
@@ -35,7 +34,7 @@ graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
 transaction = graph.begin()
 
 
-filename = 'dataV22.csv'
+filename = 'dataV2.csv'
 
 with open(filename, 'r') as csvfile:
     datareader = csv.reader(csvfile)

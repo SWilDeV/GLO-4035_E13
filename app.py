@@ -3,12 +3,17 @@ from flask import Flask
 import time
 import sys
 from Neo4J import Database
-
+import pymongo
+from dotenv import dotenv_values
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+config = dotenv_values(".env")
+MONGO_URL = config.get("MONGO_URL")
 
-exec(open('populate_etape2.py').read())
+client = pymongo.MongoClient(MONGO_URL)
+db = client["travaille_longitudinal"]
+col = db["travaille_longitudinal_data"]
 
 @app.route("/heartbeat")
 def home():
@@ -27,7 +32,7 @@ def extracted_data():
         return "error with transformed_data "
     else:
         return {
-        "nbRestaurants":"int",
+        "nbRestaurants":col.count_documents({}),
         "nbSegments":data
         }
 
@@ -42,6 +47,7 @@ def transformed_data():
         print("error with transformed_data")
         return "error with transformed_data"
     else:
+        print(col.find_one({"name":"LES ENTREPRISES ALJO"}))
         return {"restaurants":{
             "type1":"int"
         },
@@ -66,4 +72,4 @@ def transformed_data():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,13 +1,9 @@
 #Database
-import sys
-import time
-from decouple import config
 from dotenv import dotenv_values
-from py2neo import Graph, Node, Relationship
-import os
+from py2neo import Graph
 
 config = dotenv_values(".env")
-INTERNAL_URL = config.get("NEO4J_INTERNAL_URL")
+INTERNAL_URL = config.get("NEO4J_URL")
 USERNAME, PASSWORD = config.get("NEO4J_CREDENTIALS").split("/")
 
 class Database:

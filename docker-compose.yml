@@ -4,6 +4,9 @@ services:
     image: neo4j:3.5.8
     hostname: neo
     container_name: neo4j
+    networks:
+      backend:
+        ipv4_address: 172.21.0.2
     expose:
       - 7474
       - 7687
@@ -13,13 +16,56 @@ services:
     environment:
       - NEO4J_AUTH=$NEO4J_CREDENTIALS
       - NEO4J_INTERNAL_URL=$NEO4J_INTERNAL_URL
-
-  mongodb:
+  mongo:
     image: mongo:5.0
+    container_name: mongo
     ports:
       - 27017:27017
+    expose:
+      - 27017
+    networks:
+      backend:
+        ipv4_address: 172.21.0.3
     volumes:
       - ~/apps/mongo:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=S3cret
+  neo4j_populate:
+    container_name: neo4j_populate
+    build: .
+    networks:
+      backend:
+        ipv4_address: 172.21.0.4
+    depends_on:
+      - neo4j
+    command: python3 -u populate_neo4j.py
+  mongo_populate:
+    container_name: mongo_populate
+    build: .
+    networks:
+      backend:
+        ipv4_address: 172.21.0.6
+    depends_on:
+      - mongo
+    command: python3 -u populate_mongo.py
+  api:
+    build: .
+    expose:
+      - 5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - neo4j
+      - mongo
+    networks:
+      backend:
+        ipv4_address: 172.21.0.5
+    container_name: api
+    command: flask run --host=0.0.0.0 --port=5000
+networks:
+  backend:
+    driver: bridge
+    name: network_backend
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.21.0.0/24"
+          gateway: 172.21.0.1

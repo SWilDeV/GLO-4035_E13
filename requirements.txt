@@ -2,3 +2,5 @@ flask==2.2.2
 py2neo
 python-decouple
 python-dotenv
+pymongo
+geojson
