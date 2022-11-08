@@ -12,7 +12,7 @@ class Database:
         GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
         TRANSACTION = GRAPH.begin()
         try:
-            rep=(f'{(TRANSACTION.run("MATCH p=()-[r:est_voisin]->() RETURN count(p) as total").data()[0]["total"])} segments')
+            rep=int((f'{(TRANSACTION.run("MATCH p=()-[r:est_voisin]->() RETURN count(p) as total").data()[0]["total"])}'))
             
         except:
             print("prb Neo extracted data")
@@ -25,7 +25,7 @@ class Database:
         GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
         TRANSACTION = GRAPH.begin()
         try:
-            rep=(f'{(TRANSACTION.run("MATCH (:PointCycle)-[r:est_voisin]->(:PointCycle) return  sum(r.longueur) as total").data()[0]["total"]/1000)} KM')
+            rep=int((f'{(TRANSACTION.run("MATCH (:PointCycle)-[r:est_voisin]->(:PointCycle) return  sum(r.longueur) as total").data()[0]["total"])}'))
             
         except:
             print("prb Neo transformed data")

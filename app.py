@@ -15,7 +15,7 @@ MONGO_URL = config.get("MONGO_URL")
 
 @app.route("/heartbeat")
 def home():
-    return {"Montreal":"str"}
+    return {"villeChoisie":"Montreal"}
 
 
 @app.route('/extracted_data', methods=['GET'])
@@ -41,8 +41,7 @@ def extracted_data():
         return "error with extracted_data "
     else:
         return {
-        "nbRestaurants":"int",
-         "nbRestaurants":col.count_documents({}),
+        "nbRestaurants":col.count_documents({}),
         "nbSegments":data
         }
 
