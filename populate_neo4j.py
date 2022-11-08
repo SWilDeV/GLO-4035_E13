@@ -18,7 +18,7 @@ def populate_neo(url, username, password):
         transaction = graph.begin()
         print('neo connection works')
 
-        filename = 'dataV22.csv'
+        filename = 'data_short.csv'
 
         with open(filename, 'r') as csvfile:
             datareader = csv.reader(csvfile)
@@ -47,33 +47,5 @@ def populate_neo(url, username, password):
 
 
 populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
-
-
-
-
-# graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
-# transaction = graph.begin()
-
-# filename = 'dataV22.csv'
-
-# with open(filename, 'r') as csvfile:
-#     datareader = csv.reader(csvfile)
-    
-#     IDPiste1 = ''
-#     IDPiste2 = ''
-#     point1 = ''
-#     point2 = ''
-#     for row in datareader:
-#         IDPiste1 = row[1]
-#         point1 = row[0]
-#         graph.run(f"CREATE (p:PointCycle) SET p.location = Point({{latitude: {row[4]}, longitude: {row[3]}}}),  p.Quartier = '{row[2]}',  p.IDPiste = '{row[1]}',  p.IdPoint = '{row[0]}'")
-
-#         if(IDPiste1 == IDPiste2):
-#             graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.IdPoint = '{point1}' AND b.IdPoint = '{point2}' CREATE (a)-[r:est_voisin {{longueur:{row[5]} }}]->(b) RETURN type(r), r.longueur")    
-        
-
-#         print(row[0] +" / 17815")
-#         point2 = row[0]
-#         IDPiste2 = row[1]
 
 

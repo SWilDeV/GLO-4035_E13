@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask import jsonify
 import time
 import sys
 from Neo4J import Database
@@ -51,16 +52,31 @@ def transformed_data():
     try:
         db=Database()
         data = db.transformed_data_Neo()
+
+        try:
+            client = pymongo.MongoClient(MONGO_URL)
+            db = client["t_long"]
+            col = db["t_long_col"]
+        
+        except:
+            print("Oops!", sys.exc_info()[1], "occurred.")
+            print("error with Mongo Connexion in transformed_data")
+            return "error with Mongo Connexion in transformed_data"
+
     except:
         print("Oops!", sys.exc_info()[1], "occurred.")
         print("error with transformed_data")
         return "error with transformed_data"
     else:
-        # print(col.find_one({"name":"LES ENTREPRISES ALJO"}))
-        return {"restaurants":{
-            "type1":"int"
-        },
-        "longueurCyclable":data
+        result = []
+        restos = col.distinct("properties.type")
+        for resto in restos:
+            count = col.count_documents({"properties.type":resto})
+            result.append({resto:count})
+  
+        return {
+            "restaurants":result,
+            "longueurCyclable":data
         }
 
 

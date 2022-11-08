@@ -29,12 +29,28 @@ def validate_mongo_connection(url):
 validate_mongo_connection(url=MONGO_URL)
 
 
-client = pymongo.MongoClient(MONGO_URL)
-db = client["t_long"]
-file_resto = open("businesses.geojson", encoding="utf8")
-datadb = geojson.load(file_resto)
+# We wait for services Mongo to start
+def populate_mongo(url):
+    try:
+        print('Trying connection to Mongo')
+        client = pymongo.MongoClient(MONGO_URL)
+        db = client["t_long"]
 
-col = db["t_long_col"]
-col.insert_many(data for data in datadb["features"])
+        file_resto = open("businesses.geojson", encoding="utf8")
+        datadb = geojson.load(file_resto)
 
-file_resto.close()
+        col = db["t_long_col"]
+        col.insert_many(data for data in datadb["features"])
+
+        file_resto.close()
+
+        print('mongo connection works')
+    except:
+        print('Connection to mongo failed, will retry in 5 sec')
+        time.sleep(5)
+        populate_mongo(url=url)
+
+
+populate_mongo(url=MONGO_URL)
+
+

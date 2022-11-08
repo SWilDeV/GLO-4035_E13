@@ -35,3 +35,4 @@ transaction = graph.begin()
 graph.delete_all()
 graph.commit(transaction)
 print('data deleted')
+
