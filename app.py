@@ -9,11 +9,8 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 config = dotenv_values(".env")
-MONGO_URL = config.get("MONGO_URL")
+#MONGO_URL = config.get("MONGO_URL")
 
-client = pymongo.MongoClient(MONGO_URL)
-db = client["travaille_longitudinal"]
-col = db["travaille_longitudinal_data"]
 
 @app.route("/heartbeat")
 def home():
@@ -25,6 +22,11 @@ def extracted_data():
     try:
         db=Database()
         data = db.extracted_data_Neo()
+
+
+        # client = pymongo.MongoClient(MONGO_URL)
+        # db = client["travaille_longitudinal"]
+        # col = db["travaille_longitudinal_data"]
         
     except:
         print("Oops!", sys.exc_info()[1], "occurred.")
@@ -32,7 +34,8 @@ def extracted_data():
         return "error with transformed_data "
     else:
         return {
-        "nbRestaurants":col.count_documents({}),
+        "nbRestaurants":"int",
+        # "nbRestaurants":col.count_documents({}),
         "nbSegments":data
         }
 
@@ -47,7 +50,7 @@ def transformed_data():
         print("error with transformed_data")
         return "error with transformed_data"
     else:
-        print(col.find_one({"name":"LES ENTREPRISES ALJO"}))
+        # print(col.find_one({"name":"LES ENTREPRISES ALJO"}))
         return {"restaurants":{
             "type1":"int"
         },

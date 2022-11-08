@@ -4,7 +4,7 @@ from decouple import config
 from py2neo import Graph, Node, Relationship
 
 
-INTERNAL_URL = config("NEO4J_INTERNAL_URL")
+INTERNAL_URL = config("NEO4J_URL")
 
 # We use split to split the NEO4J_AUTH formatted as "user/password"
 USERNAME, PASSWORD = config("NEO4J_CREDENTIALS").split("/")
