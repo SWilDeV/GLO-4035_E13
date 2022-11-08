@@ -1,0 +1,8 @@
+Des corrections ont été apportées à la première version du rapport à la suite de la correction. 
+
+
+- Section 2B - description de données révisé et bonifié
+
+- Section 3B - justification de principes (fiabilité, maintenabilité et extensibilité) révisés et bonifiés
+
+- Professionnalismes: Correction du niveau de français.
