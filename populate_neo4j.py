@@ -19,6 +19,10 @@ def populate_neo(url, username, password):
         print('neo connection works')
 
         filename = 'data_short.csv'
+        if filename == 'data_short.csv':
+            rowNumb = " / 1000"
+        else:
+            rowNumb = " / 17815"  
 
         with open(filename, 'r') as csvfile:
             datareader = csv.reader(csvfile)
@@ -36,9 +40,11 @@ def populate_neo(url, username, password):
                     graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.IdPoint = '{point1}' AND b.IdPoint = '{point2}' CREATE (a)-[r:est_voisin {{longueur:{row[5]} }}]->(b) RETURN type(r), r.longueur")    
                 
 
-                print(row[0] +" / 17815")
+                print(row[0] +rowNumb)
                 point2 = row[0]
                 IDPiste2 = row[1]
+        
+        print('Neo4J Data inserted')
 
     except:
         print('Connection to neo failed, will retry in 5 sec')

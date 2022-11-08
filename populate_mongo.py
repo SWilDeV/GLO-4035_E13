@@ -3,30 +3,11 @@ import time
 from dotenv import dotenv_values
 import geojson
 
-
-
 config = dotenv_values(".env")
 MONGO_URL = config.get("MONGO_URL")
 
 
 print('Waiting for servers connections')
-
-
-# We wait for services Mongo to start
-def validate_mongo_connection(url):
-    try:
-        print('Trying connection to Mongo')
-        client = pymongo.MongoClient(MONGO_URL)
-        db = client["test_Connexion"]
-
-        print('mongo connection works')
-    except:
-        print('Connection to mongo failed, will retry in 5 sec')
-        time.sleep(5)
-        validate_mongo_connection(url=url)
-
-
-validate_mongo_connection(url=MONGO_URL)
 
 
 # We wait for services Mongo to start
@@ -44,7 +25,7 @@ def populate_mongo(url):
 
         file_resto.close()
 
-        print('mongo connection works')
+        print('Mongo Data inserted !')
     except:
         print('Connection to mongo failed, will retry in 5 sec')
         time.sleep(5)
