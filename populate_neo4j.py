@@ -17,12 +17,17 @@ def populate_neo(url, username, password):
         graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
         transaction = graph.begin()
         print('neo connection works')
-
+        
+        
+        ################### Choix des donnees NEO4J  ##################
         filename = 'data_short.csv'
+
         if filename == 'data_short.csv':
             rowNumb = " / 1000"
         else:
             rowNumb = " / 17815"  
+
+        ###############################################################
 
         with open(filename, 'r') as csvfile:
             datareader = csv.reader(csvfile)
