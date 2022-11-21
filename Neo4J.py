@@ -6,7 +6,7 @@ config = dotenv_values(".env")
 INTERNAL_URL = config.get("NEO4J_URL")
 USERNAME, PASSWORD = config.get("NEO4J_CREDENTIALS").split("/")
 
-class Database:
+class NeoDatabase:
 
     def extracted_data_Neo(self):
         GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
