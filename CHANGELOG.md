@@ -12,3 +12,5 @@
 - Section 3B : ajout d'une justification pour les principes de fiabilité, de maintenabilité et d'extensibilité révisés pour le language utilisé
 
 - Professionnalismes: Correction du niveau de français.
+
+- Processus d'aquisition incrémentale des données: Ajout de détails sur la comparaison et la manière de faire le changement
