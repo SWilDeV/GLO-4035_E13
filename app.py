@@ -16,36 +16,36 @@ config = dotenv_values(".env")
 
 @app.route("/heartbeat")
 def home():
-    return {"villeChoisie":"Montreal"}
+    return {"villeChoisie": "Montreal"}
 
 
 @app.route('/extracted_data', methods=['GET'])
 def extracted_data():
-    
-    dbNeo=NeoDatabase()
+
+    dbNeo = NeoDatabase()
     Neodata = dbNeo.extracted_data_Neo()
 
     dbMongo = MongoDatabase()
-    MongoData = dbMongo.extracted_data_Mongo()        
-    
+    MongoData = dbMongo.extracted_data_Mongo()
+
     return {
-    "nbRestaurants":MongoData,
-    "nbSegments":Neodata
+        "nbRestaurants": MongoData,
+        "nbSegments": Neodata
     }
 
 
 @app.route("/transformed_data")
 def transformed_data():
-    
-    dbNeo=NeoDatabase()
+
+    dbNeo = NeoDatabase()
     Neodata = dbNeo.transformed_data_Neo()
 
     dbMongo = MongoDatabase()
-    MongoData = dbMongo.transformed_data_Mongo()   
+    MongoData = dbMongo.transformed_data_Mongo()
 
     return {
-        "restaurants":MongoData,
-        "longueurCyclable":Neodata
+        "restaurants": MongoData,
+        "longueurCyclable": Neodata
     }
 
 
