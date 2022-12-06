@@ -3,6 +3,7 @@ import csv
 from decouple import config
 from py2neo import Graph
 import geopy.distance
+import sys
 
 
 INTERNAL_URL = config("NEO4J_URL")
@@ -22,10 +23,9 @@ def populate_neo(url, username, password):
 
         ################### Choix des donnees NEO4J  ##################
         filename = 'data_short.csv'
-        filename2 = 'intersection.csv'
 
-        if filename == 'data_dev.csv':
-            rowNumb = " / 100"
+        if filename == 'data_short.csv':
+            rowNumb = " / 1000"
         else:
             rowNumb = " / 17815"
 
@@ -74,21 +74,25 @@ def populate_neoV2(url, username, password):
         graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
         transaction = graph.begin()
         print('neo connection works')
-        # -------------- Insert Points----------------
-        insertPoints(graph)
-        # -------------- Insert Basic Relations----------------
-        insertBasicRelations(graph)
-        # -------------- Insert Multi Relations----------------
-        insertMultiRelations(graph)
+
+        # insertPoints(graph,'dataV3_short.csv') #Insert Points
+        # insertBasicRelations(graph, 'basicRelations_short.csv') # Insert Basic Relations
+        # insertMultiRelations(graph,'multinodes_extremites_short.csv') # Insert Multi Relations
+
+        # insertPoints(graph, 'dataV3.csv')  # Insert Points
+        # # Insert Basic Relations
+        # insertBasicRelations(graph, 'basicRelations.csv')
+        # # Insert Multi Relations
+        # insertMultiRelations(graph, 'multinodes_extremites2.csv')
     except:
         print('Connection to neo failed, will retry in 5 sec')
         time.sleep(5)
         populate_neoV2(url=url, username=username, password=password)
 
 
-def insertPoints(graph):
+def insertPoints(graph, data):
     try:
-        filename = 'dataV3_short.csv'
+        filename = data
 
         if filename == 'dataV3_short.csv':
             rowNumb = " / 300"
@@ -108,9 +112,9 @@ def insertPoints(graph):
         print('Points insertion failed')
 
 
-def insertBasicRelations(graph):
+def insertBasicRelations(graph, data):
     try:
-        filename = 'basicRelations_short.csv'
+        filename = data
         rowNumb = " / 300"
 
         with open(filename, 'r') as csvfile:
@@ -129,12 +133,13 @@ def insertBasicRelations(graph):
                 print(row[0] + rowNumb)
         print('Neo4J relations inserted')
     except:
+        print("Oops!", sys.exc_info()[1], "occurred.")
         print('Relations insertion failed (insertBasicRelations)')
 
 
-def insertMultiRelations(graph):
+def insertMultiRelations(graph, data):
     try:
-        filename = 'multinodes_extremites_short.csv'
+        filename = data
         rowNumb = " / 50"
 
         with open(filename, 'r') as csvfile:
@@ -148,8 +153,9 @@ def insertMultiRelations(graph):
                 print(row[0] + rowNumb)
         print('Neo4J Multi relations inserted')
     except:
+        print("Oops!", sys.exc_info()[1], "occurred.")
         print('Relations insertion failed (insertMultiRelations)')
 
 
-# populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
-populate_neoV2(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
+populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
+# populate_neoV2(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)

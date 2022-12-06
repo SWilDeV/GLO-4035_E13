@@ -1,5 +1,6 @@
 # Database
 import pymongo
+import sys
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
