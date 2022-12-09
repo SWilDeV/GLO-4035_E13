@@ -10,6 +10,8 @@ services:
     expose:
       - 7474
       - 7687
+    volumes:
+      - .:/data/
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -24,11 +26,11 @@ services:
       - 27017:27017
     expose:
       - 27017
+    volumes:
+      - .:/data/
     networks:
       backend:
         ipv4_address: 172.21.0.3
-    volumes:
-      - ~/apps/mongo:/data/db
 
   api:
     build: .
@@ -43,7 +45,7 @@ services:
       backend:
         ipv4_address: 172.21.0.5
     container_name: api
-    command: sh -c "python3 -u populate_neo4j.py && python3 -u populate_mongo.py && python3 -u app.py"
+    command: sh -c "python3 -u app.py"
 
 networks:
   backend:
