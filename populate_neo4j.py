@@ -22,7 +22,7 @@ def populate_neo(url, username, password):
         print('neo connection works')
 
         ################### Choix des donnees NEO4J  ##################
-        filename = 'data_short.csv'
+        filename = 'dataV4.csv'
 
         if filename == 'data_short.csv':
             rowNumb = " / 1000"
