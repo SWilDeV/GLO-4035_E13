@@ -19,6 +19,8 @@ COPY source/basicRelations_short.csv basicRelations_short.csv
 COPY source/basicRelations.csv basicRelations.csv
 COPY source/intersection_short.csv intersection_short.csv
 COPY source/intersection.csv intersection.csv
+COPY source/data_points.csv data_points.csv
+COPY source/data_pistes.csv data_pistes.csv
 COPY businesses.geojson businesses.geojson
 COPY app.py app.py
 COPY Mongo.py Mongo.py
