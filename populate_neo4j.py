@@ -19,6 +19,7 @@ def populate_neo(url, username, password):
         print('Trying connection to neo')
         graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
         transaction = graph.begin()
+        print("test")
         print('neo connection works')
 
         # check if Neo4J volume is empty
