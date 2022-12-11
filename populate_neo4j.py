@@ -21,13 +21,33 @@ def populate_neo(url, username, password):
         transaction = graph.begin()
         print('neo connection works')
 
-        insertPoints(graph, 'data_points.csv')  # Insert Points
-        insertRelations(graph, 'data_pistes.csv')  # Insert Relations
+        # check if Neo4J volume is empty
+        relationsArePresent = False
+        if (relationExist(graph) == True):
+            relationsArePresent = True
+            print("Neo4J already has data")
+
+        if (relationsArePresent != True):
+            insertPoints(graph, 'data_points.csv')  # Insert Points
+            insertRelations(graph, 'data_pistes.csv')  # Insert Relations
 
     except:
         print('Connection to neo failed, will retry in 5 sec')
         time.sleep(5)
         populate_neo(url=url, username=username, password=password)
+
+
+def relationExist(graph):
+    try:
+        result = graph.run(
+            f"RETURN exists( (:PointCycle)-[:connecte]-(:PointCycle) )").data()
+
+        request = 'exists( (:PointCycle)-[:connecte]-(:PointCycle) )'
+
+        return result[0][request]
+    except:
+        print('relationExist failed')
+        print("Oops!", sys.exc_info()[1], "occurred.")
 
 
 def insertPoints(graph, data):
