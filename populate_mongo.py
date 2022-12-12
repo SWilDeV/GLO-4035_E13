@@ -21,7 +21,7 @@ def populate_mongo(url):
         datadb = geojson.load(file_resto)
 
         col = db["t_long_col"]
-        col.delete_many({})
+        # col.delete_many({})
         col.insert_many(data for data in datadb["features"])
 
         query_open = {"properties.statut": {"$not": {"$regex": "Ouvert"}}}

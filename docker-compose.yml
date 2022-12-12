@@ -10,8 +10,6 @@ services:
     expose:
       - 7474
       - 7687
-    volumes:
-      - ~/apps/neo:/data/db
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -29,8 +27,6 @@ services:
     networks:
       backend:
         ipv4_address: 172.21.0.3
-    volumes:
-      - ~/apps/mongo:/data/db
 
   api:
     build: .

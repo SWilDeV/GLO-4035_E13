@@ -18,13 +18,12 @@ def populate_neo(url, username, password):
     try:
         print('Trying connection to neo')
         graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
-        transaction = graph.begin()
         print("test")
         print('neo connection works')
 
         # check if Neo4J volume is empty
         relationsArePresent = False
-        if (relationExist(graph) == True):
+        if (DBHasData(graph) == True):
             relationsArePresent = True
             print("Neo4J already has data")
 
@@ -38,7 +37,7 @@ def populate_neo(url, username, password):
         populate_neo(url=url, username=username, password=password)
 
 
-def relationExist(graph):
+def DBHasData(graph):
     try:
         result = graph.run(
             f"RETURN exists( (:PointCycle)-[:connecte]-(:PointCycle) )").data()
@@ -104,4 +103,4 @@ def insertRelations(graph, data):
         print('Relations insertion failed (insertBasicRelations)')
 
 
-populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
+# populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
