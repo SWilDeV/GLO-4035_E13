@@ -59,12 +59,18 @@ def insertPoints(graph, data):
             counter = 0
 
             for row in datareader:
+                p_New = row[0].replace("[", "")
+                p_New = p_New.replace("]", "")
+                p_y, p_x = p_New.split(",")
+                p = [float(p_x), float(p_y) ]
+                arrond = code_arrondissement(row[1])
                 graph.run(
-                    f"CREATE (p:PointCycle) SET p.x= {row[1]}, p.y={row[0]}, p.crs='wsg-84'")
+                    f"CREATE (p:PointCycle) SET p.x= {p[0]}, p.y={p[1]}, p.crs='wsg-84', p.arrond= {arrond}, p.id_pointCycle={counter}")
                 counter += 1
                 print(counter)
 
         print('Neo4J Points inserted')
+
     except:
         print('Points insertion failed')
         print("Oops!", sys.exc_info()[1], "occurred.")
@@ -77,6 +83,7 @@ def insertRelations(graph, data):
         with open(filename, 'r') as csvfile:
             datareader = csv.reader(csvfile)
             counter = 0
+
             for row2 in datareader:
                 coord1New = row2[0].replace("[", "")
                 coord1New = coord1New.replace("]", "")
@@ -88,19 +95,29 @@ def insertRelations(graph, data):
                 coords_2 = [float(c22), float(c21)]
                 distance = row2[5]
                 piste_id = row2[3]
+
                 try:
-                    graph.run(
-                        f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={coords_1[0]} AND a.y={coords_1[1]} AND b.x ={coords_2[0]} AND b.y={coords_2[1]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={distance}, r.piste_id={piste_id}")
+                    graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={coords_1[0]} AND a.y={coords_1[1]} AND b.x ={coords_2[0]} AND b.y={coords_2[1]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={distance}, r.id_piste={piste_id}")
                     counter += 1
                     print(counter)
+
                 except:
                     print("pas de relation!!!! ", coords_1, coords_2)
                     print("Oops!", sys.exc_info()[1], "occurred.")
 
         print('Neo4J relations inserted')
+
     except:
         print("Oops!", sys.exc_info()[1], "occurred.")
         print('Relations insertion failed (insertBasicRelations)')
+
+def code_arrondissement(text):
+        if text == 'Le Plateau-Mont-Royal': return 0
+        elif text == 'Mercier-Hochelaga-Maisonneuve': return 1
+        elif text == 'Rosemont-La Petite-Patrie': return 2
+        elif text == 'Villeray-Saint-Michel-Parc-Extension': return 3
+        elif text == 'Ville-Marie': return 4
+        else: raise print('arrondissement non code :', text)
 
 
 populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
