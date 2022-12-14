@@ -60,11 +60,12 @@ def insertPoints(graph, data):
 
             for row in datareader:
                 graph.run(
-                    f"CREATE (p:PointCycle) SET p.x= {row[1]}, p.y={row[0]}, p.crs='wsg-84'")
+                    f"CREATE (p:PointCycle) SET p.x= {row[0]}, p.y={row[1]}, p.crs='wsg-84', p.arrond= '{row[2]}', p.id_pointCycle={counter}")
                 counter += 1
                 print(counter)
 
         print('Neo4J Points inserted')
+
     except:
         print('Points insertion failed')
         print("Oops!", sys.exc_info()[1], "occurred.")
@@ -77,30 +78,22 @@ def insertRelations(graph, data):
         with open(filename, 'r') as csvfile:
             datareader = csv.reader(csvfile)
             counter = 0
+
             for row2 in datareader:
-                coord1New = row2[0].replace("[", "")
-                coord1New = coord1New.replace("]", "")
-                coord2New = row2[1].replace("[", "")
-                coord2New = coord2New.replace("]", "")
-                c11, c12 = coord1New.split(",")
-                c21, c22 = coord2New.split(",")
-                coords_1 = [float(c12), float(c11)]
-                coords_2 = [float(c22), float(c21)]
-                distance = row2[5]
-                piste_id = row2[3]
                 try:
-                    graph.run(
-                        f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={coords_1[0]} AND a.y={coords_1[1]} AND b.x ={coords_2[0]} AND b.y={coords_2[1]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={distance}, r.piste_id={piste_id}")
+                    graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={row2[0]} AND a.y={row2[1]} AND b.x ={row2[2]} AND b.y={row2[3]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={row2[7]}, r.id_piste={row2[5]}")
                     counter += 1
                     print(counter)
+
                 except:
-                    print("pas de relation!!!! ", coords_1, coords_2)
+                    print("pas de relation!!!! ","[", row2[0],",",row2[1], "],[",row2[0],",",row2[1],"]")
+                    counter += 1
                     print("Oops!", sys.exc_info()[1], "occurred.")
 
         print('Neo4J relations inserted')
+
     except:
         print("Oops!", sys.exc_info()[1], "occurred.")
         print('Relations insertion failed (insertBasicRelations)')
-
 
 populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
