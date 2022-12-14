@@ -27,4 +27,5 @@ COPY Mongo.py Mongo.py
 COPY Neo4J.py Neo4J.py
 COPY .env .env
 COPY requirements.txt requirements.txt
+COPY Fields.html templates/Fields.html
 RUN pip install -Ur requirements.txt
