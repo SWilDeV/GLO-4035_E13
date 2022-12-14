@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template, request, redirect
 from flask import jsonify
 import time
 import sys
@@ -13,6 +13,16 @@ app.config.from_object(__name__)
 config = dotenv_values(".env")
 # MONGO_URL = config.get("MONGO_URL")
 
+content = {'ListeTypes': "---"}
+
+@app.route("/hello", methods=("GET", "POST"))
+def hello():
+    if request.method == "POST":
+        dbMongo = MongoDatabase()
+        mongoData = dbMongo.transformed_data_Mongo()
+        content['ListeTypes'] = mongoData
+
+    return render_template('Fields.html', content=content)
 
 @app.route("/heartbeat")
 def home():
