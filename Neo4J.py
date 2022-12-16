@@ -14,7 +14,7 @@ class NeoDatabase:
         TRANSACTION = GRAPH.begin()
         try:
             rep = int(
-                (f'{(TRANSACTION.run("MATCH p=()-[r:est_voisin]->() RETURN count(p) as total").data()[0]["total"])}'))
+                (f'{(TRANSACTION.run("MATCH p=()-[r:connecte]->() RETURN count(p) as total").data()[0]["total"])}'))
 
         except:
             print("prb Neo extracted data")
@@ -27,8 +27,8 @@ class NeoDatabase:
         GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
         TRANSACTION = GRAPH.begin()
         try:
-            rep = int(
-                (f'{(TRANSACTION.run("MATCH (:PointCycle)-[r:est_voisin]->(:PointCycle) return  sum(r.longueur) as total").data()[0]["total"])}'))
+            rep = (
+                (f'{(TRANSACTION.run("MATCH (:PointCycle)-[r:connecte]->(:PointCycle) return  sum(r.longueur) as total").data()[0]["total"])}'))
 
         except:
             print("prb Neo transformed data")
