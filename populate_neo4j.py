@@ -60,7 +60,7 @@ def insertPoints(graph, data):
 
             for row in datareader:
                 graph.run(
-                    f"CREATE (p:PointCycle) SET p.x= {row[0]}, p.y={row[1]}, p.crs='wsg-84', p.arrond= '{row[2]}', p.id_pointCycle={counter}")
+                    f"CREATE (p:PointCycle) SET p.x= {row[0]}, p.y={row[1]}, p.crs='wsg-84', p.arrond= '{row[2]}', p.id_pointCycle='{row[3]}'")
                 counter += 1
                 print(counter)
 
@@ -82,6 +82,7 @@ def insertRelations(graph, data):
             for row2 in datareader:
                 try:
                     graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={row2[0]} AND a.y={row2[1]} AND b.x ={row2[2]} AND b.y={row2[3]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={row2[7]}, r.id_piste={row2[5]}")
+                    graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={row2[2]} AND a.y={row2[3]} AND b.x ={row2[0]} AND b.y={row2[1]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={row2[7]}, r.id_piste={row2[5]}")
                     counter += 1
                     print(counter)
 
