@@ -28,8 +28,8 @@ def populate_neo(url, username, password):
         #     print("Neo4J already has data")
 
         # if (relationsArePresent != True):
-        insertPoints(graph, 'data_points_short.csv')  # Insert Points
-        insertRelations(graph, 'data_pistes_short.csv')  # Insert Relations
+        insertPoints(graph, 'data_points.csv')  # Insert Points
+        insertRelations(graph, 'data_pistes.csv')  # Insert Relations
 
     except:
         print('Connection to neo failed, will retry in 5 sec')
