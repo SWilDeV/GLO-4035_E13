@@ -22,14 +22,14 @@ def populate_neo(url, username, password):
         print('neo connection works')
 
         # check if Neo4J volume is empty
-        relationsArePresent = False
-        if (DBHasData(graph) == True):
-            relationsArePresent = True
-            print("Neo4J already has data")
+        # relationsArePresent = False
+        # if (DBHasData(graph) == True):
+        #     relationsArePresent = True
+        #     print("Neo4J already has data")
 
-        if (relationsArePresent != True):
-            insertPoints(graph, 'data_points.csv')  # Insert Points
-            insertRelations(graph, 'data_pistes.csv')  # Insert Relations
+        # if (relationsArePresent != True):
+        insertPoints(graph, 'data_points_short.csv')  # Insert Points
+        insertRelations(graph, 'data_pistes_short.csv')  # Insert Relations
 
     except:
         print('Connection to neo failed, will retry in 5 sec')
@@ -81,13 +81,16 @@ def insertRelations(graph, data):
 
             for row2 in datareader:
                 try:
-                    graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={row2[0]} AND a.y={row2[1]} AND b.x ={row2[2]} AND b.y={row2[3]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={row2[7]}, r.id_piste={row2[5]}")
-                    graph.run(f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={row2[2]} AND a.y={row2[3]} AND b.x ={row2[0]} AND b.y={row2[1]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={row2[7]}, r.id_piste={row2[5]}")
+                    graph.run(
+                        f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={row2[0]} AND a.y={row2[1]} AND b.x ={row2[2]} AND b.y={row2[3]}  CREATE (a)-[r:connecte]->(b) SET r.longueur={row2[7]}, r.id_piste={row2[5]}")
+                    graph.run(
+                        f"MATCH (a:PointCycle),  (b:PointCycle) WHERE a.x ={row2[0]} AND a.y={row2[1]} AND b.x ={row2[2]} AND b.y={row2[3]}  CREATE (b)-[r:connecte]->(a) SET r.longueur={row2[7]}, r.id_piste={row2[5]}")
                     counter += 1
                     print(counter)
 
                 except:
-                    print("pas de relation!!!! ","[", row2[0],",",row2[1], "],[",row2[0],",",row2[1],"]")
+                    print("pas de relation!!!! ",
+                          "[", row2[0], ",", row2[1], "],[", row2[0], ",", row2[1], "]")
                     counter += 1
                     print("Oops!", sys.exc_info()[1], "occurred.")
 
@@ -96,5 +99,6 @@ def insertRelations(graph, data):
     except:
         print("Oops!", sys.exc_info()[1], "occurred.")
         print('Relations insertion failed (insertBasicRelations)')
+
 
 populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
