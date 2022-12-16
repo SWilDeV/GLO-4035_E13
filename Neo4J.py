@@ -13,8 +13,7 @@ class NeoDatabase:
         GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
         TRANSACTION = GRAPH.begin()
         try:
-            rep = int(
-                (f'{(TRANSACTION.run("MATCH p=()-[r:est_voisin]->() RETURN count(p) as total").data()[0]["total"])}'))
+            rep = (f'{(TRANSACTION.run("MATCH p=()-[r:connecte]->() RETURN count(p) as total").data()[0]["total"])}')
 
         except:
             print("prb Neo extracted data")
@@ -27,8 +26,7 @@ class NeoDatabase:
         GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
         TRANSACTION = GRAPH.begin()
         try:
-            rep = int(
-                (f'{(TRANSACTION.run("MATCH (:PointCycle)-[r:est_voisin]->(:PointCycle) return  sum(r.longueur) as total").data()[0]["total"])}'))
+            rep = (f'{(TRANSACTION.run("MATCH (:PointCycle)-[r:connecte]->(:PointCycle) return  sum(r.longueur) as total").data()[0]["total"])}')
 
         except:
             print("prb Neo transformed data")
@@ -36,3 +34,32 @@ class NeoDatabase:
 
         else:
             return rep
+
+    def adjacent(self, id):
+        listAdj = []
+        GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
+        TRANSACTION = GRAPH.begin()
+        try:
+            request = 'MATCH (a:PointCycle {id_pointCycle:"' + id + '"})-[connecte]->(b:PointCycle) RETURN b.id_pointCycle'
+            rep = ((TRANSACTION.run(request).data()))
+        except:
+            print("failed request path from node")
+            return "failed request path from node : " + request
+        else:
+            for x in rep:
+                listAdj.append(x["b.id_pointCycle"])
+            return listAdj
+
+    def paths(self, id, nNodes):
+        listPaths = [[id]]
+        i = nNodes
+        while i > 1:
+            newListPath = []
+            for path in listPaths:
+                currentNode = path[len(path) - 1]
+                adjNodes = self.adjacent(currentNode)
+                for newNode in adjNodes:
+                    newListPath = newListPath + [path + [newNode]]
+            i = i - 1
+            listPaths = newListPath
+        return listPaths
