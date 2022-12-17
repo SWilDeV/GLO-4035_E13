@@ -101,4 +101,4 @@ def insertRelations(graph, data):
         print('Relations insertion failed (insertBasicRelations)')
 
 
-populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
+# populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
