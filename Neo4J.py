@@ -65,7 +65,7 @@ class NeoDatabase:
             i = i - 1
             listPaths = newListPath
         return listPaths
-    
+
 
     # la fonction peut etre bonifie
     # elle return toutes les plus courts chemins vers les autres Nodes
@@ -96,7 +96,7 @@ class NeoDatabase:
                         ORDER BY totalCost
                         ''')
             rep = ((TRANSACTION.run(request).data()))
-            
+
 
         except:
             print("failed request Dijkstra from node")
