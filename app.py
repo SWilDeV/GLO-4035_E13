@@ -57,6 +57,23 @@ def transformed_data():
         "restaurants": MongoData,
         "longueurCyclable": Neodata
     }
+@app.route("/adjacent/<idNode>")
+def adjacent(idNode):
+
+    dbNeo = NeoDatabase()
+    Neodata = dbNeo.adjacent(idNode)
+
+    return Neodata
+
+@app.route("/path/<idNode>/<nNodes>")
+def paths(idNode, nNodes):
+
+    dbNeo = NeoDatabase()
+    Neodata = dbNeo.paths(idNode, int(nNodes))
+
+    return Neodata
+
+
 
 
 if __name__ == '__main__':
