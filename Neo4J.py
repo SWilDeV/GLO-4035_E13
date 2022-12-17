@@ -6,7 +6,6 @@ config = dotenv_values(".env")
 INTERNAL_URL = config.get("NEO4J_URL")
 USERNAME, PASSWORD = config.get("NEO4J_CREDENTIALS").split("/")
 
-
 class NeoDatabase:
 
     def extracted_data_Neo(self):
@@ -66,3 +65,44 @@ class NeoDatabase:
             i = i - 1
             listPaths = newListPath
         return listPaths
+    
+
+    # la fonction peut etre bonifie
+    # elle return toutes les plus courts chemins vers les autres Nodes
+    # en format list, cela nous permet de parcourir toutes les sorties
+
+    def Dijkstra(self, id):
+        GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
+        TRANSACTION = GRAPH.begin()
+        try:
+            request = ('''
+                        MATCH (source:PointCycle)
+                        WHERE source.id_pointCycle = ''' +"'"+str(id) +"'"+ '''
+                        CALL gds.allShortestPaths.dijkstra.stream('Graph', {
+                            sourceNode: source,
+                            relationshipWeightProperty: 'longueur',
+                            nodeLabels: ['PointCycle']
+                        })
+                        YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+                        RETURN
+                            index,
+                            gds.util.asNode(sourceNode).id_pointCycle AS sourceNodeId,
+                            gds.util.asNode(targetNode).id_pointCycle AS targetNodeId,
+                            gds.util.asNode(targetNode).arrond AS arrondNodeId,
+                            totalCost,
+                            [nodeId IN nodeIds | gds.util.asNode(nodeId).id_pointCycle] AS nodeNames,
+                            costs,
+                            nodes(path) as path
+                        ORDER BY totalCost
+                        ''')
+            rep = ((TRANSACTION.run(request).data()))
+            
+
+        except:
+            print("failed request Dijkstra from node")
+            return "failed request Dijkstra from node : " + id
+
+        else:
+            return rep
+
+
