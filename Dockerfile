@@ -12,6 +12,8 @@ COPY source/data_pistes.csv data_pistes.csv
 COPY source/data_points_short.csv data_points_short.csv
 COPY source/data_pistes_short.csv data_pistes_short.csv
 COPY businesses.geojson businesses.geojson
+COPY source/data_point_with_mongo.csv data_point_with_mongo.csv
+COPY source/MongoData.geojson MongoData.geojson
 COPY app.py app.py
 COPY Mongo.py Mongo.py
 COPY Neo4J.py Neo4J.py

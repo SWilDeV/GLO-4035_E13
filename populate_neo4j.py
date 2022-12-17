@@ -28,7 +28,7 @@ def populate_neo(url, username, password):
         #     print("Neo4J already has data")
 
         # if (relationsArePresent != True):
-        insertPoints(graph, 'data_points.csv')  # Insert Points
+        insertPoints(graph, 'data_point_with_mongo.csv')  # Insert Points
         insertRelations(graph, 'data_pistes.csv')  # Insert Relations
 
     except:
@@ -57,10 +57,21 @@ def insertPoints(graph, data):
         with open(filename, 'r') as csvfile:
             datareader = csv.reader(csvfile)
             counter = 0
-
             for row in datareader:
-                graph.run(
-                    f"CREATE (p:PointCycle) SET p.x= {row[0]}, p.y={row[1]}, p.crs='wsg-84', p.arrond= '{row[2]}', p.id_pointCycle='{row[3]}'")
+                additionalData = ", "
+                lengthRow = len(row)
+                # print(lengthRow)
+                if (lengthRow > 4):
+                    for i in range(4, lengthRow-3, 2):
+                        additionalData = additionalData + \
+                            f"p.{row[i]} = {row[i+1]},"
+                    additionalData = additionalData + \
+                        f"p.{row[lengthRow-2]} = '{row[lengthRow-1]}'"
+                    graph.run(
+                        f"CREATE (p:PointCycle) SET p.x= {row[0]}, p.y={row[1]}, p.crs='wsg-84', p.arrond= '{row[2]}', p.id_pointCycle='{row[3]}'{additionalData}")
+                else:
+                    graph.run(
+                        f"CREATE (p:PointCycle) SET p.x= {row[0]}, p.y={row[1]}, p.crs='wsg-84', p.arrond= '{row[2]}', p.id_pointCycle='{row[3]}'")
                 counter += 1
                 print(counter)
 
