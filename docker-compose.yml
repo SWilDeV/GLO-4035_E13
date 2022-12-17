@@ -19,6 +19,8 @@ services:
       # install plugins
       - NEO4JLABS_PLUGINS=["apoc"]
       - NEO4J_dbms_security_procedures_whitelist=apoc.*
+      - NEO4J_dbms_security_procedures_unrestricted=gds.* \
+      - NEO4J_dbms_security_procedures_whitelist=gds.* \
       # grant permissions to the APOC function and procedures
       # - NEO4J_dbms_security_procedures_unrestricted=apoc.*
 

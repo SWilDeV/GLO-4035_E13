@@ -43,3 +43,18 @@ class MongoDatabase:
                 result[resto] = count
 
             return result
+
+    def extracted_type_Mongo(self):
+
+        try:
+            client = pymongo.MongoClient(MONGO_URL)
+            db = client["t_long"]
+            col = db["t_long_col"]
+
+        except:
+            print("Oops!", sys.exc_info()[1], "occurred.")
+            print("error with Mongo Connexion in extracted_data")
+            return "error with Mongo Connexion in extracted_data"
+
+        else:
+            return col.distinct("properties.type")
