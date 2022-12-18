@@ -81,8 +81,28 @@ def readme():
     template = markdown.markdown(readme.read())
     return template
 
-
-
-
+@app.route("/type")
+def type():
+    dbMongo = MongoDatabase()
+    MongoData = dbMongo.extracted_type_Mongo()
+    return MongoData
+    
+@app.route("/starting_point")
+def starting_point():
+    dbNeo = NeoDatabase()
+    # Neodata = dbNeo.random_spawn()
+    return {
+        "startingPoint":{
+            "type": "Point",
+            "coordinates":[
+                1,1
+            ]
+        }
+    }
+@app.route("/parcours")
+def parcours(payload):
+    return {
+        
+    }
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

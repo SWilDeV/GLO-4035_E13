@@ -68,6 +68,18 @@ class NeoDatabase:
 
 
 
+
+    def random_spawn():
+        GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
+        TRANSACTION = GRAPH.begin()
+        try:
+            request = 'MATCH (a:PointCycle {id_pointCycle:"' + id + '"})-[connecte]->(b:PointCycle) RETURN b.id_pointCycle'
+            rep = ((TRANSACTION.run(request).data()))
+        except:
+            print("failed request path from node")
+            return "failed request path from node : " + request
+        return 0
+        
     # la fonction peut etre bonifie
     # elle return toutes les plus courts chemins vers les autres Nodes
     # en format list, cela nous permet de parcourir toutes les sorties
