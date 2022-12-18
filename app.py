@@ -84,7 +84,9 @@ def type():
     return MongoData
     
 @app.route("/starting_point")
-def starting_point(lenght, type):
+def starting_point():
+    dbNeo = NeoDatabase()
+    # Neodata = dbNeo.random_spawn()
     return {
         "startingPoint":{
             "type": "Point",
