@@ -20,4 +20,5 @@ COPY Neo4J.py Neo4J.py
 COPY .env .env
 COPY requirements.txt requirements.txt
 COPY Fields.html templates/Fields.html
+COPY readme.md readme.md
 RUN pip install -Ur requirements.txt

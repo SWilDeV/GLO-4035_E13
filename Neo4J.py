@@ -67,6 +67,7 @@ class NeoDatabase:
         return listPaths
 
 
+
     # la fonction peut etre bonifie
     # elle return toutes les plus courts chemins vers les autres Nodes
     # en format list, cela nous permet de parcourir toutes les sorties

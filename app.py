@@ -7,8 +7,10 @@ from Neo4J import NeoDatabase
 from Mongo import MongoDatabase
 # import pymongo
 from dotenv import dotenv_values
+import markdown
 app = Flask(__name__)
 app.config.from_object(__name__)
+
 
 config = dotenv_values(".env")
 # MONGO_URL = config.get("MONGO_URL")
@@ -72,6 +74,12 @@ def paths(idNode, nNodes):
     Neodata = dbNeo.paths(idNode, int(nNodes))
 
     return Neodata
+
+@app.route("/readme")
+def readme():
+    readme = open("readme.md", "r")
+    template = markdown.markdown(readme.read())
+    return template
 
 
 
