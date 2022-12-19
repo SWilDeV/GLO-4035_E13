@@ -87,22 +87,14 @@ def type():
     MongoData = dbMongo.extracted_type_Mongo()
     return MongoData
     
-@app.route("/starting_point")
+@app.route("/starting_point", methods=['POST'])
 def starting_point():
+    request_data = request.get_json()
+    length = request_data["length"]
+    type = request_data["type"]
     dbNeo = NeoDatabase()
-    # Neodata = dbNeo.random_spawn()
-    return {
-        "startingPoint":{
-            "type": "Point",
-            "coordinates":[
-                1,1
-            ]
-        }
-    }
-@app.route("/parcours")
-def parcours(payload):
-    return {
-        
-    }
+    NeoData = dbNeo.getPathFromLength(length, type)
+    return NeoData
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

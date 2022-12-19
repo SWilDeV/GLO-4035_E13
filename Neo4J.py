@@ -66,7 +66,34 @@ class NeoDatabase:
             listPaths = newListPath
         return listPaths
 
-
+    def getPathFromLength(self, length, types):
+        GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
+        TRANSACTION = GRAPH.begin()
+        min = length - 0.1 * length
+        max = length + 0.1 * length
+        try:
+            if not types:
+                request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE c.longueur > ' + str(min) + ' AND c.longueur < ' + str(max) + ' RETURN a LIMIT 1'
+                rep = TRANSACTION.run(request).data()
+            else:
+                for type in types:
+                    request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE c.longueur > ' + str(min) + ' AND c.longueur < ' + str(max) + ' AND a.' + type + ' > 0 RETURN a'
+                    rep = TRANSACTION.run(request).data()
+                    if len(rep) > 0:
+                        break
+        except:
+            print("failed to request path of " + str(length) + " length")
+            return "failed to request path between " + str(min) + " and " + str(max) + " length"
+        result = {
+            "startingPoint": {
+                "type": "Point",
+                "coordinates": [
+                    rep[0]["a"]["x"],
+                    rep[0]["a"]["y"]
+                ]
+            }
+        }
+        return result
 
 
     def random_spawn():

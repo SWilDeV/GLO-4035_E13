@@ -6,6 +6,7 @@ docker compose up
 ## @GET /hearthbeat
 ### Exemple Requête:
 /heartbeat <br />
+### Result:
 {<br />
   "villeChoisie": "Montreal"<br />
 }
@@ -13,6 +14,7 @@ docker compose up
 ## @GET /extracted_data
 ### Exemple Requête:
 /extracted_data <br />
+### Result:
 {<br />
   "nbRestaurants": 3857,<br />
   "nbSegments": 5470<br />
@@ -21,6 +23,7 @@ docker compose up
 ## @GET /transformed_data
 ### Exemple Requête:
 /transformed_data <br />
+### Result:
 {<br />
   "longueurCyclable": "634258.0",<br />
   "restaurants": {<br />
@@ -41,6 +44,25 @@ docker compose up
 ### Exemple Requête:
 /readme <br />
 *Ouvre le document présent*
+
+## @POST /starting_point
+### Exemple Requête:
+/starting_point <br />
+### with payload: <br />
+{<br />
+    "length": 100,<br />
+    "type": ["Italien", "Cafe"]<br />
+}<br />
+### Result:
+{<br />
+    "startingPoint": {<br />
+        "coordinates": [<br />
+            45.525085,<br />
+            -73.555608<br />
+        ],<br />
+        "type": "Point"<br />
+    }<br />
+}<br />
 
 # Web Server Dockerised (default): .env file:
 
