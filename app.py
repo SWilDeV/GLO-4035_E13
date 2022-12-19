@@ -17,6 +17,7 @@ config = dotenv_values(".env")
 
 content = {'ListeTypes': "---"}
 
+
 @app.route("/hello", methods=("GET", "POST"))
 def hello():
     if request.method == "POST":
@@ -25,6 +26,7 @@ def hello():
         content['ListeTypes'] = mongoData
 
     return render_template('Fields.html', content=content)
+
 
 @app.route("/heartbeat")
 def home():
@@ -59,6 +61,35 @@ def transformed_data():
         "restaurants": MongoData,
         "longueurCyclable": Neodata
     }
+
+
+@app.route("/parcours")
+def parcours():
+    request_data = request.get_json()
+    length = request_data["length"]
+    type = request_data["type"]
+    IdPoint = request_data["IDPoint"]
+
+    dbNeo = NeoDatabase()
+    # type = 'Restaurant'
+    ListeParcours = dbNeo.parcours_point(IdPoint, length, type)
+    # ListeParcours = dbNeo.parcours_point(177, 2000, type)
+    LongueurTotale = ListeParcours["totalCost"]
+    # print(LongueurTotale)
+    data = []
+    for element in ListeParcours["nodesCoord"]:
+        data.append(element)
+
+    dbMongo = MongoDatabase()
+    ParcoursData = dbMongo.queryMongoDBForNeoData(data, type)
+    # for el in ParcoursData:
+    #     print(el)
+
+    return {
+        "data": ParcoursData,
+    }
+
+
 @app.route("/adjacent/<idNode>")
 def adjacent(idNode):
 
@@ -66,6 +97,7 @@ def adjacent(idNode):
     Neodata = dbNeo.adjacent(idNode)
 
     return Neodata
+
 
 @app.route("/path/<idNode>/<nNodes>")
 def paths(idNode, nNodes):
@@ -75,18 +107,21 @@ def paths(idNode, nNodes):
 
     return Neodata
 
+
 @app.route("/readme")
 def readme():
     readme = open("readme.md", "r")
     template = markdown.markdown(readme.read())
     return template
 
+
 @app.route("/type")
 def type():
     dbMongo = MongoDatabase()
     MongoData = dbMongo.extracted_type_Mongo()
     return MongoData
-    
+
+
 @app.route("/starting_point", methods=['POST'])
 def starting_point():
     request_data = request.get_json()
@@ -95,6 +130,7 @@ def starting_point():
     dbNeo = NeoDatabase()
     NeoData = dbNeo.getPathFromLength(length, type)
     return NeoData
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
