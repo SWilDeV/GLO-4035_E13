@@ -65,19 +65,17 @@ def transformed_data():
 
 @app.route("/parcours")
 def parcours():
+
     request_data = request.get_json()
     length = request_data["length"]
     type = request_data["type"]
-    # IdPoint = request_data["IDPoint"]
     coordinates = request_data["startingPoint"]["coordinates"]
     if (len(type) > 1):
         type = type[0]
 
     dbNeo = NeoDatabase()
-    # type = 'Restaurant'
     ListeParcours = dbNeo.parcours_point(
         coordinates[1], coordinates[0], length, type)
-    # ListeParcours = dbNeo.parcours_point(177, 2000, type)
     LongueurTotale = ListeParcours["totalCost"]
     data = []
     for element in ListeParcours["nodesCoord"]:
@@ -85,54 +83,48 @@ def parcours():
 
     dbMongo = MongoDatabase()
     ParcoursData = dbMongo.queryMongoDBForNeoData(data, type)
-    # for el in ParcoursData:
-    #     print(el)
 
     return {
-        {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            "float",
-                            "float"
-                        ]
-                    },
-                    "properties": {
-                        "name": "str",
-                        "type": type
-                    }
+        "data": ParcoursData,
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point"
                 },
-                {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "MultiLineString",
-                        "coordinates": [
+                "properties": {
+                    "name": "str",
+                    "type": type
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "MultiLineString",
+                    "coordinates": [
+                        [
                             [
-                                [
-                                    "float",
-                                    "float"
-                                ],
-                                [
-                                    "float",
-                                    "float"
-                                ],
-                                [
-                                    "float",
-                                    "float"
-                                ]
+                                "float",
+                                "float"
+                            ],
+                            [
+                                "float",
+                                "float"
+                            ],
+                            [
+                                "float",
+                                "float"
                             ]
                         ]
-                    },
-                    "properties": {
-                        "length": LongueurTotale
-                    }, "result": ParcoursData
+                    ]
+                },
+                "properties": {
+                    "length": LongueurTotale
                 }
-            ]
-        }
+            }
+        ]
+
     }
 
 
