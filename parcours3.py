@@ -20,7 +20,7 @@ CALL gds.graph.project(
 )
 ''')
 
-def parcours_point(graph, point_dep, distance, type, limite): 
+def parcours_point(graph, point_dep, distance, type, limite):
     query = ('''
     MATCH (source:PointCycle)
     WHERE source.id_pointCycle = ''' +"'"+str(point_dep) +"'"+ '''
@@ -47,13 +47,13 @@ def parcours_stops(graph, point_dep, arrets, distance, type, limite):
     liste_parcours=[]
     for element in parcours_point(graph, point_dep, distance/arrets, type, int(limite/arrets)):
         parcours = [element['totalCost'],element['targetNodeId'], element['nodeNames']]
-        if arrets == 1: 
+        if arrets == 1:
             liste_parcours.append(parcours)
             next
         else:
             for element_2 in parcours_point(graph, element['targetNodeId'], distance/arrets, type, int(limite/arrets)):
                 parcours_2 = [parcours[0]+element_2['totalCost'], parcours[1],element_2['targetNodeId'],element['nodeNames']+element_2['nodeNames']]
-                if arrets == 2: 
+                if arrets == 2:
                     liste_parcours.append(parcours_2)
                     next
                 else:
@@ -62,7 +62,7 @@ def parcours_stops(graph, point_dep, arrets, distance, type, limite):
                             if arrets == 3:
                                 liste_parcours.append(parcours_3)
     return liste_parcours
-    
+
 
 
 ### parcours_stops(graph, point de depart, nombre_arrets, distance, type_resto, limite)

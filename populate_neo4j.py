@@ -30,6 +30,8 @@ def populate_neo(url, username, password):
         # if (relationsArePresent != True):
         insertPoints(graph, 'data_point_with_mongo.csv')  # Insert Points
         insertRelations(graph, 'data_pistes.csv')  # Insert Relations
+        time.sleep(5)
+        createProjection(graph)
 
     except:
         print('Connection to neo failed, will retry in 5 sec')
@@ -110,6 +112,27 @@ def insertRelations(graph, data):
     except:
         print("Oops!", sys.exc_info()[1], "occurred.")
         print('Relations insertion failed (insertBasicRelations)')
+
+
+def createProjection(graph):
+    try:
+
+        graph.run('''
+        CALL gds.graph.project(
+            'Graph',
+            'PointCycle',
+            'connecte',
+            {
+                relationshipProperties: 'longueur'
+            }
+        )
+        ''')
+
+        print('Neo4J Graph Projection inserted')
+
+    except:
+        print("Oops!", sys.exc_info()[1], "occurred.")
+        print('Relations insertion failed (createProjection)')
 
 
 populate_neo(url=INTERNAL_URL, username=USERNAME, password=PASSWORD)
