@@ -160,7 +160,7 @@ def type():
     return MongoData
 
 
-@app.route("/starting_point", methods=['POST'])
+@app.route("/starting_point")
 def starting_point():
     request_data = request.get_json()
     length = request_data["length"]
