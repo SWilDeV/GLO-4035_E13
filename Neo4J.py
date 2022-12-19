@@ -39,17 +39,17 @@ class NeoDatabase:
         else:
             return rep
 
-    def parcours_point(self, point_dep, distance, type):
+    def parcours_point(self, lat, long, distance, type):
         graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
         try:
             if (type != ''):
                 TRANSACTION = graph.begin()
                 rep = ((TRANSACTION.run(
-                    (f"MATCH (source:PointCycle) WHERE source.id_pointCycle = '{point_dep}' CALL gds.allShortestPaths.dijkstra.stream('Graph', {{ sourceNode: source,relationshipWeightProperty: 'longueur', nodeLabels: ['PointCycle']}}) YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path WHERE gds.util.asNode(targetNode).{type} > 1 AND totalCost > {distance*0.9} AND totalCost < {distance *1.1} AND gds.util.asNode(targetNode) <> gds.util.asNode(sourceNode)RETURN DISTINCT totalCost, gds.util.asNode(sourceNode).id_pointCycle AS sourceNodeId, gds.util.asNode(targetNode).id_pointCycle AS targetNodeId,[nodeId IN nodeIds |    [gds.util.asNode(nodeId).id_pointCycle,gds.util.asNode(nodeId).y,gds.util.asNode(nodeId).x]] AS nodesCoord SKIP 1 LIMIT 10")))).data()
+                    (f"MATCH (source:PointCycle) WHERE source.x = {lat} AND source.y = {long}  CALL gds.allShortestPaths.dijkstra.stream('Graph', {{ sourceNode: source,relationshipWeightProperty: 'longueur', nodeLabels: ['PointCycle']}}) YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path WHERE gds.util.asNode(targetNode).{type} > 1 AND totalCost > {distance*0.9} AND totalCost < {distance *1.1} AND gds.util.asNode(targetNode) <> gds.util.asNode(sourceNode)RETURN DISTINCT totalCost, gds.util.asNode(sourceNode).id_pointCycle AS sourceNodeId, gds.util.asNode(targetNode).id_pointCycle AS targetNodeId,[nodeId IN nodeIds |    [gds.util.asNode(nodeId).id_pointCycle,gds.util.asNode(nodeId).y,gds.util.asNode(nodeId).x]] AS nodesCoord SKIP 1 LIMIT 10")))).data()
             else:
                 TRANSACTION = graph.begin()
                 rep = ((TRANSACTION.run(
-                    (f"MATCH (source:PointCycle) WHERE source.id_pointCycle = '{point_dep}' CALL gds.allShortestPaths.dijkstra.stream('Graph', {{ sourceNode: source,relationshipWeightProperty: 'longueur', nodeLabels: ['PointCycle']}}) YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path WHERE  totalCost > {distance*0.9} AND totalCost < {distance *1.1} AND gds.util.asNode(targetNode) <> gds.util.asNode(sourceNode)RETURN DISTINCT totalCost, gds.util.asNode(sourceNode).id_pointCycle AS sourceNodeId, gds.util.asNode(targetNode).id_pointCycle AS targetNodeId,[nodeId IN nodeIds |    [gds.util.asNode(nodeId).id_pointCycle,gds.util.asNode(nodeId).y,gds.util.asNode(nodeId).x]] AS nodesCoord SKIP 1 LIMIT 10")))).data()
+                    (f"MATCH (source:PointCycle) WHERE source.x = {lat} AND source.y = {long}  CALL gds.allShortestPaths.dijkstra.stream('Graph', {{ sourceNode: source,relationshipWeightProperty: 'longueur', nodeLabels: ['PointCycle']}}) YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path WHERE  totalCost > {distance*0.9} AND totalCost < {distance *1.1} AND gds.util.asNode(targetNode) <> gds.util.asNode(sourceNode)RETURN DISTINCT totalCost, gds.util.asNode(sourceNode).id_pointCycle AS sourceNodeId, gds.util.asNode(targetNode).id_pointCycle AS targetNodeId,[nodeId IN nodeIds |    [gds.util.asNode(nodeId).id_pointCycle,gds.util.asNode(nodeId).y,gds.util.asNode(nodeId).x]] AS nodesCoord SKIP 1 LIMIT 10")))).data()
 
             randomNum = random.randint(0, len((rep))-1)
             return rep[randomNum]
