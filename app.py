@@ -162,9 +162,15 @@ def type():
 
 @app.route("/starting_point")
 def starting_point():
-    request_data = request.get_json()
-    length = request_data["length"]
-    type = request_data["type"]
+    try:
+        request_data = request.get_json()
+    except:
+        return "No payload"
+    try:
+        length = request_data["length"]
+        type = request_data["type"]
+    except:
+        return "Invalid payload"
     dbNeo = NeoDatabase()
     NeoData = dbNeo.getPathFromLength(length, type)
     return NeoData
