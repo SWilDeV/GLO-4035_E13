@@ -95,13 +95,11 @@ class NeoDatabase:
         max = length + 0.1 * length
         try:
             if not types:
-                request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE c.longueur > ' + str(
-                    min) + ' AND c.longueur < ' + str(max) + ' RETURN a LIMIT 1'
+                request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) RETURN a LIMIT 1'
                 rep = TRANSACTION.run(request).data()
             else:
                 for type in types:
-                    request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE c.longueur > ' + str(
-                        min) + ' AND c.longueur < ' + str(max) + ' AND a.' + type + ' > 0 RETURN a'
+                    request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE a.' + type + ' > 0 RETURN a'
                     rep = TRANSACTION.run(request).data()
                     if len(rep) > 0:
                         break
