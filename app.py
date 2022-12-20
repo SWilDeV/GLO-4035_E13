@@ -5,6 +5,8 @@ import time
 import sys
 from Neo4J import NeoDatabase
 from Mongo import MongoDatabase
+import random
+import geopy.distance
 # import pymongo
 from dotenv import dotenv_values
 import markdown
@@ -130,8 +132,6 @@ def parcours():
             print("---------------------------------------")
         pointFinal = resultPoint(
             ParcoursData[lenPD-1][2], typeR, ParcoursData[lenPD-1][3])
-        # distance = int(getDistance(el, ParcoursData[lenPD-1][1]))
-        # print("distance "+str(distance))
         distance = 0
         subPaths = []
         for i in range(start, lenPD):
@@ -144,24 +144,9 @@ def parcours():
         finalResult = finalResult + pointFinal + linesFinal
 
     elif NbreArrets == 0:
-        # randNum = random.randint(1, lenPD-1)
-        # point = resultPoint(
-        #     ParcoursData[randNum][2], typeR, ParcoursData[randNum][3])
-        # distance = int(getDistance(
-        #     ParcoursData[0][1], ParcoursData[randNum][1]))
-        # print("distance 1 arret "+str(distance))
-
-        # subPaths = []
-        # for i in range(start, randNum):
-        #     subPaths.append(Paths[i])
-        # start = randNum
-        # print("start"+str(start))
-        # lines = resultMultiline(distance, subPaths)
-        # finalResult = finalResult + point + lines
 
         pointFinal = resultPoint(
             ParcoursData[lenPD-1][2], typeR, ParcoursData[lenPD-1][3])
-        # distance = int(getDistance(coord1, ParcoursData[lenPD-1][1]))
 
         subPaths = []
         distance = 0
@@ -227,74 +212,6 @@ def resultMultiline(LongueurSegment, coordonneeNodes):
             "length": LongueurSegment
         }
     }]
-# @app.route("/parcours")
-# def parcours():
-
-#     request_data = request.get_json()
-#     length = request_data["length"]
-#     try:
-#         typeR = request_data["type"]
-#     except:
-#         typeR = ['Restaurant']
-#     coordinates = request_data["startingPoint"]["coordinates"]
-
-#     typeR = typeR[0]
-#     dbNeo = NeoDatabase()
-#     ListeParcours = dbNeo.parcours_point(
-#         coordinates[1], coordinates[0], length, typeR)
-#     if ListeParcours == "empty":
-#         return "No path found for type " + typeR
-#     LongueurTotale = ListeParcours["totalCost"]
-#     data = []
-#     for element in ListeParcours["nodesCoord"]:
-#         data.append(element)
-
-#     dbMongo = MongoDatabase()
-#     ParcoursData = dbMongo.queryMongoDBForNeoData(data, typeR)
-#     return {
-#         "data": ParcoursData,
-#         "type": "FeatureCollection",
-#         "features": [
-#             {
-#                 "type": "Feature",
-#                 "geometry": {
-#                     "type": "Point"
-#                 },
-#                 "properties": {
-#                     "name": "str",
-#                     "type": typeR
-#                 }
-#             },
-#             {
-#                 "type": "Feature",
-#                 "geometry": {
-#                     "type": "MultiLineString",
-#                     "coordinates": [
-#                         [
-#                             [
-#                                 "float",
-#                                 "float"
-#                             ],
-#                             [
-#                                 "float",
-#                                 "float"
-#                             ],
-#                             [
-#                                 "float",
-#                                 "float"
-#                             ]
-#                         ]
-#                     ]
-#                 },
-#                 "properties": {
-#                     "length": LongueurTotale
-#                     }
-#             }
-#         ]
-
-#     }
-
-
 
 @app.route("/readme")
 def readme():

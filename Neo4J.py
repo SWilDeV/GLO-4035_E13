@@ -40,41 +40,6 @@ class NeoDatabase:
         else:
             return rep
 
-    # def parcours_point(self, lat, long, distance, type):
-    #     graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
-    #     try:
-    #         try:
-    #             graphExist = self.GraphExist()
-    #             if graphExist == False:
-    #                 try:
-    #                     self.createProjection()
-    #                 except:
-    #                     print("createProjection")
-    #                     return "createProjection "
-    #         except:
-    #             print("GraphExist")
-    #             return "GraphExist "
-    #         if (type != ''):
-    #             TRANSACTION = graph.begin()
-    #             rep = ((TRANSACTION.run(
-    #                 (f"MATCH (source:PointCycle) WHERE source.x = {lat} AND source.y = {long}  CALL gds.allShortestPaths.dijkstra.stream('Graph', {{ sourceNode: source,relationshipWeightProperty: 'longueur', nodeLabels: ['PointCycle']}}) YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path WHERE gds.util.asNode(targetNode).{type} > 1 AND totalCost > {distance*0.9} AND totalCost < {distance *1.1} AND gds.util.asNode(targetNode) <> gds.util.asNode(sourceNode)RETURN DISTINCT totalCost, gds.util.asNode(sourceNode).id_pointCycle AS sourceNodeId, gds.util.asNode(targetNode).id_pointCycle AS targetNodeId,[nodeId IN nodeIds |    [gds.util.asNode(nodeId).id_pointCycle,gds.util.asNode(nodeId).y,gds.util.asNode(nodeId).x]] AS nodesCoord SKIP 1 LIMIT 10")))).data()
-    #         else:
-    #             TRANSACTION = graph.begin()
-    #             rep = ((TRANSACTION.run(
-    #                 (f"MATCH (source:PointCycle) WHERE source.x = {lat} AND source.y = {long}  CALL gds.allShortestPaths.dijkstra.stream('Graph', {{ sourceNode: source,relationshipWeightProperty: 'longueur', nodeLabels: ['PointCycle']}}) YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path WHERE  totalCost > {distance*0.9} AND totalCost < {distance *1.1} AND gds.util.asNode(targetNode) <> gds.util.asNode(sourceNode)RETURN DISTINCT totalCost, gds.util.asNode(sourceNode).id_pointCycle AS sourceNodeId, gds.util.asNode(targetNode).id_pointCycle AS targetNodeId,[nodeId IN nodeIds |    [gds.util.asNode(nodeId).id_pointCycle,gds.util.asNode(nodeId).y,gds.util.asNode(nodeId).x]] AS nodesCoord SKIP 1 LIMIT 10")))).data()
-
-    #         if (len(rep)) > 2:
-    #             randomNum = random.randint(0, len((rep))-2)
-    #         elif (len(rep) == 0):
-    #             return "empty"
-    #         else:
-    #             randomNum = len(rep)-1
-
-    #         return rep[randomNum]
-
-    #     except:
-    #         print("failed request path from parcours_point")
-    #         return "failed request path from parcours_point "
     def parcours_point(self, lat, long, distance, type):
         graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
         try:
@@ -140,6 +105,7 @@ class NeoDatabase:
         except:
             print("Oops!", sys.exc_info()[1], "occurred.")
             print('GraphExist failed (GraphExist)')
+# ------------------------------------------------------------------------------------------
 
     def getPathFromLength(self, length, types):
         GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
