@@ -5,6 +5,8 @@ import time
 import sys
 from Neo4J import NeoDatabase
 from Mongo import MongoDatabase
+import random
+import geopy.distance
 # import pymongo
 from dotenv import dotenv_values
 import markdown
@@ -62,89 +64,154 @@ def transformed_data():
         "longueurCyclable": Neodata
     }
 
-
 @app.route("/parcours")
 def parcours():
-
+    # -----Get info from payload----
     request_data = request.get_json()
     length = request_data["length"]
-    type = request_data["type"]
+    NbreArrets = request_data["numberOfStops"]
     coordinates = request_data["startingPoint"]["coordinates"]
-    if (len(type) > 1):
-        type = type[0]
+    try:
+        typeR = request_data["type"]
+    except:
+        typeR = ['Restaurant']
+    typeR = typeR[0]
 
+    # ---------Get path with Neo4J------------
     dbNeo = NeoDatabase()
     ListeParcours = dbNeo.parcours_point(
-        coordinates[1], coordinates[0], length, type)
+        coordinates[1], coordinates[0], length, typeR)
+    if ListeParcours == "empty":
+        return "No path found for type " + typeR
     LongueurTotale = ListeParcours["totalCost"]
     data = []
     for element in ListeParcours["nodesCoord"]:
         data.append(element)
 
+    # ---------Get Restaurants info from Neo4J path------------
     dbMongo = MongoDatabase()
-    ParcoursData = dbMongo.queryMongoDBForNeoData(data, type)
+    ParcoursData = dbMongo.queryMongoDBForNeoData(data, typeR)
+    lenPD = len(ParcoursData)
+    print("lenPD: " + str(lenPD))
+    Paths = []
+    for element in ParcoursData:
+        Paths.append(element[1])
 
-    return {
-        "data": ParcoursData,
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point"
-                },
-                "properties": {
-                    "name": "str",
-                    "type": type
-                }
-            },
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
-                        [
-                            [
-                                "float",
-                                "float"
-                            ],
-                            [
-                                "float",
-                                "float"
-                            ],
-                            [
-                                "float",
-                                "float"
-                            ]
-                        ]
-                    ]
-                },
-                "properties": {
-                    "length": LongueurTotale
-                }
-            }
-        ]
+    # ---------Create response--------------
+    listSplitting = getSplitting(NbreArrets, lenPD-2)
 
-    }
+    coord1 = ParcoursData[0][1]
+    start = 0
+    finalResult = []
+    position = 0
+
+    print(LongueurTotale)
+    if (NbreArrets > 0):
+        # listSplitting.sort()
+        print(listSplitting)
+        print("---------------------------------------")
+        for element in listSplitting:
+            position = position + element
+            print(position)
+            print(coord1)
+            point = resultPoint(
+                ParcoursData[position][2], typeR, ParcoursData[position][3])
+
+            subPaths = []
+            distance = 0
+            for i in range(start, position):
+                subPaths.append(Paths[i])
+            for el in subPaths:
+                distance = distance + int(getDistance(coord1, el))
+                coord1 = el
+            print("distance "+str(distance))
+            start = position
+            print("start "+str(start))
+            lines = resultMultiline(distance, subPaths)
+            finalResult = finalResult + point + lines
+            print("---------------------------------------")
+        pointFinal = resultPoint(
+            ParcoursData[lenPD-1][2], typeR, ParcoursData[lenPD-1][3])
+        distance = 0
+        subPaths = []
+        for i in range(start, lenPD):
+            subPaths.append(Paths[i])
+        for el in subPaths:
+            distance = distance + int(getDistance(coord1, el))
+            coord1 = el
+        print("distance "+str(distance))
+        linesFinal = resultMultiline(distance, subPaths)
+        finalResult = finalResult + pointFinal + linesFinal
+
+    elif NbreArrets == 0:
+
+        pointFinal = resultPoint(
+            ParcoursData[lenPD-1][2], typeR, ParcoursData[lenPD-1][3])
+
+        subPaths = []
+        distance = 0
+        for i in range(start, lenPD):
+            subPaths.append(Paths[i])
+
+        for el in subPaths:
+            distance = distance + int(getDistance(coord1, el))
+            coord1 = el
+        print("distance "+str(distance))
+        linesFinal = resultMultiline(distance, subPaths)
+        finalResult = finalResult + pointFinal + linesFinal
+
+    return {"type": "FeatureCollection",
+            "features": finalResult}
 
 
-@app.route("/adjacent/<idNode>")
-def adjacent(idNode):
-
-    dbNeo = NeoDatabase()
-    Neodata = dbNeo.adjacent(idNode)
-
-    return Neodata
+def getDistance(coords_1, coords_2):
+    coord1a = [coords_1[1], coords_1[0]]
+    coord2a = [coords_2[1], coords_2[0]]
+    distance = geopy.distance.geodesic(coord1a, coord2a).m
+    return distance
 
 
-@app.route("/path/<idNode>/<nNodes>")
-def paths(idNode, nNodes):
+def getSplitting(NbreArret, lenPD):
+    if (NbreArret <= 0):
+        return lenPD
+    list = []
+    while (len(list) != NbreArret):
+        list = splitter(lenPD)
+    return list
 
-    dbNeo = NeoDatabase()
-    Neodata = dbNeo.paths(idNode, int(nNodes))
 
-    return Neodata
+def splitter(lenPD, lst=[]):
+    if lenPD == 0:
+        return lst
+    n = random.randint(1, lenPD)
+    return splitter(lenPD - n, lst + [n])
 
+
+def resultPoint(NomResto, typeR, coordonneeResto):
+    return [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates":  coordonneeResto
+        },
+        "properties": {
+            "name": NomResto,
+            "Type": typeR
+        }
+    }]
+
+
+def resultMultiline(LongueurSegment, coordonneeNodes):
+    return [{
+        "type": "Feature",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [coordonneeNodes]
+        },
+        "properties":{
+            "length": LongueurSegment
+        }
+    }]
 
 @app.route("/readme")
 def readme():
