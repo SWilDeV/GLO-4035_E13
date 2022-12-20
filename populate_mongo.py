@@ -25,6 +25,7 @@ def populate_mongo(url):
             datadb = geojson.load(file_resto)
 
             col = db["t_long_col"]
+            col.delete_many({})
             col.insert_many(data for data in datadb)
 
             file_resto.close()
@@ -36,6 +37,8 @@ def populate_mongo(url):
         print('Connection to mongo failed, will retry in 5 sec')
         time.sleep(5)
         populate_mongo(url=url)
+
+
 
 
 populate_mongo(url=MONGO_URL)

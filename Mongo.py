@@ -57,6 +57,8 @@ class MongoDatabase:
                 NodeCoordinates = []
                 NodeCoordinates.append(element[1])
                 NodeCoordinates.append(element[2])
+                if type == "":
+                    type = "Restaurant"
 
                 pipeline = [
                     {

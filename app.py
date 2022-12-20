@@ -68,22 +68,25 @@ def parcours():
 
     request_data = request.get_json()
     length = request_data["length"]
-    type = request_data["type"]
+    try:
+        typeR = request_data["type"]
+    except:
+        typeR = ['Restaurant']
     coordinates = request_data["startingPoint"]["coordinates"]
-    if (len(type) > 1):
-        type = type[0]
 
+    typeR = typeR[0]
     dbNeo = NeoDatabase()
     ListeParcours = dbNeo.parcours_point(
-        coordinates[1], coordinates[0], length, type)
+        coordinates[1], coordinates[0], length, typeR)
+    if ListeParcours == "empty":
+        return "No path found for type " + typeR
     LongueurTotale = ListeParcours["totalCost"]
     data = []
     for element in ListeParcours["nodesCoord"]:
         data.append(element)
 
     dbMongo = MongoDatabase()
-    ParcoursData = dbMongo.queryMongoDBForNeoData(data, type)
-
+    ParcoursData = dbMongo.queryMongoDBForNeoData(data, typeR)
     return {
         "data": ParcoursData,
         "type": "FeatureCollection",
@@ -95,7 +98,7 @@ def parcours():
                 },
                 "properties": {
                     "name": "str",
-                    "type": type
+                    "type": typeR
                 }
             },
             {
@@ -121,7 +124,7 @@ def parcours():
                 },
                 "properties": {
                     "length": LongueurTotale
-                }
+                    }
             }
         ]
 

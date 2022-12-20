@@ -10,6 +10,8 @@ services:
     expose:
       - 7474
       - 7687
+    volumes:
+      - .:/data/
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -19,15 +21,7 @@ services:
       # install plugins
       - NEO4JLABS_PLUGINS=["graph-data-science"]
       - NEO4J_dbms_security_procedures_whitelist=gds.*
-      - NEO4J_dbms_security_procedures_unrestricted=gds.* 
-      # - NEO4JLABS_PLUGINS=["apoc"]
-      # - NEO4J_dbms_security_procedures_whitelist=apoc.*
-      # - NEO4JLABS_PLUGINS=["apoc","graph-data-science"]
-      # - NEO4J_dbms_security_procedures_whitelist=apoc.*
-      # - NEO4J_dbms_security_procedures_unrestricted=gds.* \
-      # - NEO4J_dbms_security_procedures_whitelist=gds.* \
-      # grant permissions to the APOC function and procedures
-      # - NEO4J_dbms_security_procedures_unrestricted=apoc.*t
+      - NEO4J_dbms_security_procedures_unrestricted=gds.*
 
   mongo:
     image: mongo:5.0
@@ -53,7 +47,10 @@ services:
       backend:
         ipv4_address: 172.21.0.5
     container_name: api
-    command: sh -c "python3 -u populate_neo4j.py && python3 -u populate_mongo.py && python3 -u app.py"
+    command:
+      sh -c "python3 -u populate_mongo.py && python3 -u app.py && python3 -u createGraph.py"
+      # && python3 -u createGraph.py
+      # sh -c "python3 -c'from Neo4J import NeoDatabase; NeoDatabase.createProjection()'"
 
 networks:
   backend:
