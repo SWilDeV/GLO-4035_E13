@@ -103,12 +103,13 @@ class NeoDatabase:
                     rep = TRANSACTION.run(request).data()
                     if len(rep) > 0:
                         break
+            randomNum = random.randint(0, len(rep) - 1)
             result = {
                 "startingPoint": {
                     "type": "Point",
                     "coordinates": [
-                        rep[0]["a"]["x"],
-                        rep[0]["a"]["y"]
+                        rep[randomNum]["a"]["x"],
+                        rep[randomNum]["a"]["y"]
                     ]
                 }
             }
@@ -116,7 +117,10 @@ class NeoDatabase:
 
             print("Oops!", sys.exc_info()[1], "occurred.")
             print("failed to request path of " + str(length) + " length")
-            return "failed to request path between " + str(min) + " and " + str(max) + " length"
+            errormsg = "failed to request path between " + str(min) + " and " + str(max) + " length avec "
+            for type in types:
+                errormsg = errormsg + " " + type
+            return errormsg
 
         return result
 
