@@ -61,7 +61,7 @@ def transformed_data():
 
     return {
         "restaurants": MongoData,
-        "longueurCyclable": Neodata
+        "longueurCyclable": float(Neodata)
     }
 
 @app.route("/parcours")
@@ -92,31 +92,23 @@ def parcours():
     dbMongo = MongoDatabase()
     ParcoursData = dbMongo.queryMongoDBForNeoData(data, typeR)
     lenPD = len(ParcoursData)
-    print("lenPD: " + str(lenPD))
     Paths = []
     for element in ParcoursData:
         Paths.append(element[1])
 
     # ---------Create response--------------
     listSplitting = getSplitting(NbreArrets, lenPD-2)
-
     coord1 = ParcoursData[0][1]
     start = 0
     finalResult = []
     position = 0
 
-    print(LongueurTotale)
+
     if (NbreArrets > 0):
-        # listSplitting.sort()
-        print(listSplitting)
-        print("---------------------------------------")
         for element in listSplitting:
             position = position + element
-            print(position)
-            print(coord1)
             point = resultPoint(
                 ParcoursData[position][2], typeR, ParcoursData[position][3])
-
             subPaths = []
             distance = 0
             for i in range(start, position):
@@ -124,12 +116,9 @@ def parcours():
             for el in subPaths:
                 distance = distance + int(getDistance(coord1, el))
                 coord1 = el
-            print("distance "+str(distance))
             start = position
-            print("start "+str(start))
             lines = resultMultiline(distance, subPaths)
             finalResult = finalResult + point + lines
-            print("---------------------------------------")
         pointFinal = resultPoint(
             ParcoursData[lenPD-1][2], typeR, ParcoursData[lenPD-1][3])
         distance = 0
@@ -139,7 +128,6 @@ def parcours():
         for el in subPaths:
             distance = distance + int(getDistance(coord1, el))
             coord1 = el
-        print("distance "+str(distance))
         linesFinal = resultMultiline(distance, subPaths)
         finalResult = finalResult + pointFinal + linesFinal
 
@@ -147,16 +135,13 @@ def parcours():
 
         pointFinal = resultPoint(
             ParcoursData[lenPD-1][2], typeR, ParcoursData[lenPD-1][3])
-
         subPaths = []
         distance = 0
         for i in range(start, lenPD):
             subPaths.append(Paths[i])
-
         for el in subPaths:
             distance = distance + int(getDistance(coord1, el))
             coord1 = el
-        print("distance "+str(distance))
         linesFinal = resultMultiline(distance, subPaths)
         finalResult = finalResult + pointFinal + linesFinal
 

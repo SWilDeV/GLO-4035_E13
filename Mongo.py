@@ -74,21 +74,24 @@ class MongoDatabase:
                 ]
                 # All restaurants per Neo4J Point are in results
                 restos = list(col.aggregate(pipeline))
-                randomNum = random.randint(0, len((restos))-1)
-                # print(randomNum)
-                nomResto = restos[randomNum]["properties"]["name"]
-                restoCoord = restos[randomNum]["geometry"]["coordinates"]
-                restoArray = []
-                isPresent = False
-                for row in finalArray:
-                    if (row[3] == restoCoord):
-                        isPresent = True
-                if isPresent == False:
-                    restoArray.append(element[0])
-                    restoArray.append(NodeCoordinates)
-                    restoArray.append(nomResto)
-                    restoArray.append(restoCoord)
-                    finalArray.append(restoArray)
+                lenRestos = len(restos)
+                randomNum = 1
+                if (lenRestos > 1):
+                    randomNum = random.randint(0, len(restos)-1)
+                    print(len(restos))
+                    nomResto = restos[randomNum]["properties"]["name"]
+                    restoCoord = restos[randomNum]["geometry"]["coordinates"]
+                    restoArray = []
+                    isPresent = False
+                    for row in finalArray:
+                        if (row[3] == restoCoord):
+                            isPresent = True
+                    if isPresent == False:
+                        restoArray.append(element[0])
+                        restoArray.append(NodeCoordinates)
+                        restoArray.append(nomResto)
+                        restoArray.append(restoCoord)
+                        finalArray.append(restoArray)
 
             return finalArray
         except:

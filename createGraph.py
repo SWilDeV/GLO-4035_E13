@@ -14,7 +14,6 @@ print('Waiting for servers connections')
 
 def createProjection(url, username, password):
     try:
-        time.sleep(20)
         graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
         graph.run('''
             CALL gds.graph.project(

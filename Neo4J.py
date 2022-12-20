@@ -114,15 +114,12 @@ class NeoDatabase:
         max = length + 0.1 * length
         try:
             if not types:
-                request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) RETURN a LIMIT 1'
+                request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE a.Restaurant >1 RETURN a LIMIT 1'
                 rep = TRANSACTION.run(request).data()
             else:
-                for type in types:
-                    request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE a.' + \
-                        type + ' > 0 RETURN a'
-                    rep = TRANSACTION.run(request).data()
-                    if len(rep) > 0:
-                        break
+                types = types[0]
+                request = f"MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE a.{types} > 0 RETURN a"
+                rep = TRANSACTION.run(request).data()
             randomNum = random.randint(0, len(rep) - 1)
             result = {
                 "startingPoint": {
@@ -135,7 +132,6 @@ class NeoDatabase:
                 }
             }
         except:
-
             print("Oops!", sys.exc_info()[1], "occurred.")
             print("failed to request path of " + str(length) + " length")
             errormsg = "failed to request path between " + \
