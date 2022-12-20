@@ -117,7 +117,7 @@ class NeoDatabase:
                 request = 'MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE a.Restaurant >1 RETURN a LIMIT 1'
                 rep = TRANSACTION.run(request).data()
             else:
-                types = types[0]
+                types = self.getGoodType(types)
                 request = f"MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE a.{types} > 0 RETURN a"
                 rep = TRANSACTION.run(request).data()
             randomNum = random.randint(0, len(rep) - 1)
@@ -141,7 +141,21 @@ class NeoDatabase:
             return errormsg
 
         return result
-
+    def getGoodType(self, type):
+        print(type)
+        if type == ['Bar laitier']:
+            type = 'Bar_laitier'
+        elif type == ['Bar salon, taverne']:
+            type = 'Bar_salon_taverne'
+        elif type == ['Restaurant mets pour emporter']:
+            type = 'Restaurant_mets_pour_emporter'
+        elif type == ['Restaurant service rapide']:
+            type = 'Restaurant_service_rapide'
+        elif type == ['Tim Hortons']:
+            type = "Tim_Hortons"
+        else:
+            type = type[0]
+        return type
     def random_spawn():
         GRAPH = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD))
         TRANSACTION = GRAPH.begin()
