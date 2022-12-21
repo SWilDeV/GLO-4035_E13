@@ -120,14 +120,20 @@ class NeoDatabase:
                 types = self.getGoodType(types)
                 request = f"MATCH (a:PointCycle)-[c:connecte]->(b:PointCycle) WHERE a.{types} > 0 RETURN a"
                 rep = TRANSACTION.run(request).data()
-            randomNum = random.randint(0, len(rep) - 1)
+
+            if (len(rep) > 1):
+                randomNum = random.randint(0, len(rep) - 1)
+            elif (len(rep) == 1):
+                randomNum = 0
+
+            else:
+                return "No path found for this combination"
             result = {
                 "startingPoint": {
                     "type": "Point",
                     "coordinates": [
-                        rep[randomNum]["a"]["y"],
-                        rep[randomNum]["a"]["x"]
-
+                            rep[randomNum]["a"]["y"],
+                            rep[randomNum]["a"]["x"]
                     ]
                 }
             }

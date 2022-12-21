@@ -18,16 +18,8 @@ def populate_neo(url, username, password):
     try:
         print('Trying connection to neo')
         graph = Graph(INTERNAL_URL, auth=(USERNAME, PASSWORD), secure=False)
-        print("test")
         print('neo connection works')
 
-        # check if Neo4J volume is empty
-        # relationsArePresent = False
-        # if (DBHasData(graph) == True):
-        #     relationsArePresent = True
-        #     print("Neo4J already has data")
-
-        # if (relationsArePresent != True):
         insertPoints(graph, 'data_point_with_mongo.csv')  # Insert Points
         insertRelations(graph, 'data_pistes.csv')  # Insert Relations
         time.sleep(5)
@@ -62,7 +54,6 @@ def insertPoints(graph, data):
             for row in datareader:
                 additionalData = ", "
                 lengthRow = len(row)
-                # print(lengthRow)
                 if (lengthRow > 4):
                     for i in range(4, lengthRow-3, 2):
                         additionalData = additionalData + \
